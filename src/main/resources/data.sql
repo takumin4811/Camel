@@ -1,2 +1,1 @@
-insert into employee(id,name,age)
-values (a,"tom",30);
+insert into employee(id,name,age) values ('1','DOM',30);

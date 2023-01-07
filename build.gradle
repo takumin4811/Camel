@@ -27,6 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.20.0'
+	implementation 'com.h2database:h2'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	developmentOnly 'org.apache.camel.springboot:camel-spring-boot-starter:3.20.0'
