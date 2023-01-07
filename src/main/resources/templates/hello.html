@@ -10,11 +10,14 @@
     <h1>HelloWorld</h1>
     <form method="post" action="/hello">
         Input: <input type="text" name="text1"/>
-        <input type="submit" value="click">
+        <input type="submit" value="click"/>
     </form>
     <br/>
+    <br/>
+    <br/>
     <form method="post" action="/hello/db">
-        EMPLOYEE-ID <input type="submit" value="click"/>
+        EMPLOYEE-ID:  <input type="text" name="text2" th:value="${text2_value}"/>
+        <imput type="submit" value="click!!"/>
     </form>
 
 </body>
