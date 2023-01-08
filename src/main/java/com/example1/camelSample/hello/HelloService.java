@@ -12,7 +12,7 @@ public class HelloService {
 
         String employeeId = (String) map.get("id");
         String name = (String) map.get("name");
-        int age = (Integer)map.get("age");
+        Integer age = (Integer)map.get("age");
 
         Employee employee = new Employee();
         employee.setEmployeeId(employeeId);
