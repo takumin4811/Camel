@@ -8,8 +8,8 @@ public class HelloService {
     @Autowired 
     private HelloRepository repository;
     public Employee getEmployee(String id){
+        System.out.println(id);
         Map <String,Object> map = repository.findById(id);
-
         String employeeId = (String) map.get("id");
         String name = (String) map.get("name");
         Integer age = (Integer)map.get("age");
