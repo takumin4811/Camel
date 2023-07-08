@@ -1,0 +1,42 @@
+{"properties": [
+  {
+    "name": "spring.datasource.initialize",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.initialize'"
+  },
+  {
+    "name": "my.camel.localroot",
+    "type": "java.lang.String",
+    "description": "A description for 'my.camel.localroot'"
+  },
+  {
+    "name": "camel.health.indicator.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'camel.health.indicator.enabled'"
+  },
+  {
+    "name": "hawtio.authenticationEnabled",
+    "type": "java.lang.String",
+    "description": "A description for 'hawtio.authenticationEnabled'"
+  },
+  {
+    "name": "management.endpoint.hawtio.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'management.endpoint.hawtio.enabled'"
+  },
+  {
+    "name": "hawtio.authenticationEnabled",
+    "type": "java.lang.String",
+    "description": "A description for 'hawtio.authenticationEnabled'"
+  },
+  {
+    "name": "hawtio.authenticationEnabled",
+    "type": "java.lang.String",
+    "description": "A description for 'hawtio.authenticationEnabled'"
+  },
+  {
+    "name": "hawtio.authenticationEnabled",
+    "type": "java.lang.String",
+    "description": "A description for 'hawtio.authenticationEnabled'"
+  }
+]}

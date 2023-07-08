@@ -1,0 +1,50 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.13-SNAPSHOT'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.example1'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	
+}
+
+dependencies {
+	// implementation 'org.apache.camel:camel-bom:3.20.1'
+    // implementation 'org.apache.camel.springboot:camel-spring-boot-bom:3.20.1'
+	implementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.20.1'
+	implementation 'org.apache.camel.springboot:camel-ftp-starter:3.20.1'
+	implementation 'org.apache.camel.springboot:camel-exec-starter:3.20.1'
+	implementation "org.apache.camel:camel-endpointdsl:3.20.1"
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'com.h2database:h2'
+	implementation 'io.hawt:hawtio-springboot:2.17.4'
+	implementation 'org.apache.camel:camel-management:3.20.1'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.batch:spring-batch-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
