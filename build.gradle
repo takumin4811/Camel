@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.13-SNAPSHOT'
+	id 'org.springframework.boot' version '2.7.13'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
@@ -22,8 +22,8 @@ repositories {
 }
 
 dependencies {
-	// implementation 'org.apache.camel:camel-bom:3.20.1'
-    // implementation 'org.apache.camel.springboot:camel-spring-boot-bom:3.20.1'
+	implementation 'org.apache.camel:camel-bom:3.20.1'
+    implementation 'org.apache.camel.springboot:camel-spring-boot-bom:3.20.1'
 	implementation 'org.apache.camel.springboot:camel-spring-boot-starter:3.20.1'
 	implementation 'org.apache.camel.springboot:camel-ftp-starter:3.20.1'
 	implementation 'org.apache.camel.springboot:camel-exec-starter:3.20.1'
@@ -42,7 +42,7 @@ dependencies {
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.batch:spring-batch-test'
+	// testImplementation 'org.springframework.batch:spring-batch-test'
 }
 
 tasks.named('test') {

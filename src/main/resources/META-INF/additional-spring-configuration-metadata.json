@@ -38,5 +38,25 @@
     "name": "hawtio.authenticationEnabled",
     "type": "java.lang.String",
     "description": "A description for 'hawtio.authenticationEnabled'"
+  },
+  {
+    "name": "my.camel.tmpdir",
+    "type": "java.lang.String",
+    "description": "A description for 'my.camel.tmpdir'"
+  },
+  {
+    "name": "hawtio.authenticationEnabled",
+    "type": "java.lang.String",
+    "description": "A description for 'hawtio.authenticationEnabled'"
+  },
+  {
+    "name": "hawtio.authenticationEnabled",
+    "type": "java.lang.String",
+    "description": "A description for 'hawtio.authenticationEnabled'"
+  },
+  {
+    "name": "hawtio.authenticationEnabled",
+    "type": "java.lang.String",
+    "description": "A description for 'hawtio.authenticationEnabled'"
   }
 ]}

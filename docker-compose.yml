@@ -1,0 +1,44 @@
+version: '3.6'
+services:
+  # DEV:
+  #   image: takuminmin2/devjava
+  #   container_name: DEV
+  #   ports:
+  #     - 8080:8080
+  #     - 10001:10001
+  #   tty: true
+  #   volumes:
+  #     - ./:/Camel2/
+  #   working_dir: /Camel2/
+  ftpSrv1:
+    image: stilliard/pure-ftpd:latest
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    environment:
+      - PUBLICHOST=ftpSrv1
+      - FTP_USER_NAME=foo1
+      - FTP_USER_PASS=bar1
+      - FTP_USER_HOME=/home/foo
+  ftpSrv2:
+    image: stilliard/pure-ftpd:latest
+    ports:
+      - "121:21"
+      - "40000-40009:30000-30009"
+    environment:
+      - PUBLICHOST=ftpSrv2
+      - FTP_USER_NAME=foo2
+      - FTP_USER_PASS=bar2
+      - FTP_USER_HOME=/home/foo
+  sftpSrv1:
+    image: atmoz/sftp
+    ports:
+        - "2222:22"
+    command: hoge1:fuga1:::data
+  sftpSrv2:
+    image: atmoz/sftp
+    ports:
+        - "2223:22"
+    command: hoge2:fuga2:::data
+
+
