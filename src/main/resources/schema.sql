@@ -1,43 +1,54 @@
-create table if not exists FTPServers(
-    nodeId varchar(8) primary key ,
+Drop table if exists FileInfos;
+create table if not exists FileInfos(
+    fileId varchar(20) primary key,
+    fileIdName varchar(100) ,
+    srcFileName varchar(50),
+    srcFileNameExt varchar(5),
+    srcFileNameTrgExt varchar(5),
+    dstFileName varchar(50),
+    dstFileNameExt varchar(5),
+    dstFileNameTrgExt varchar(5),
+    routeId varchar(20),
+    KidoType varchar(10),
+    RegexKbn int
+);
+Drop table if exists Routes;
+create table if not exists Routes(
+    routeId varchar(20) primary key,
+    routeIdName varchar(100) ,
+    srcNodeId varchar(8),
+    srcPath varchar(30),
+    srcCharset varchar(10),
+    srcLinefeed varchar(8),
+    dstNodeId varchar(8),
+    dstPath varchar(30),
+    dstCharset varchar(10),
+    dstLinefeed varchar(8),
+    footerdel int
+);
+Drop table if exists Nodes;
+create table if not exists Nodes(
+    nodeId varchar(8) primary key,
+    nodetype varchar(8),
     host varchar(15),
+    port int(5),
     userid varchar(10),
     passwd varchar(10),
     isPassive boolean
 );
 
-create table if not exists Routes(
-    routeId varchar(8) primary key ,
-    routeType varchar(10),
-    dstNodeId varchar(8),
-    dstPath varchar(30)
-);
-
-create table if not exists ConvertRules(
-    routeId varchar(8) primary key ,
-    srcCharset varchar(10),
-    srcLinefeed varchar(8),
-    dstCharset varchar(10),
-    dstLinefeed varchar(8),
-    footerdel int
-);
-
-create table if not exists FileNameConvertRules(
-    fileId int primary key ,
-    routeId varchar(8) ,
-    srcfilename varchar(30),
-    dstfilename varchar(30)
+Drop table if exists PollingNodes;
+create table if not exists PollingNodes(
+    nodeId varchar(8) primary key,
+    pollingDirectory varchar(20),
+    PollingRecursive boolean,
+    PollingTrgName varchar(10)
 );
 
 
-
-create table if not exists Triggers(
-    triggerFileName varchar(100) primary key ,
-    routeId varchar(8)
-);
-
-create table if not exists PostExec(
-    routeId varchar(8) primary key ,
-    cmd varchar(100),
-    arg1 varchar(100)
-);
+Drop view if exists FilesRoutes;
+create view FilesRoutes as 
+select f.KidoType, f.fileId,f.RegexKbn,r.routeId,
+r.srcNodeId,r.srcPath,f.srcFileName,f.srcFileNameExt,f.srcFileNameTrgExt,r.srcCharset,r.srcLineFeed,
+r.dstNodeId,r.dstPath,f.dstFileName,f.dstFileNameExt,f.dstFileNameTrgExt,r.dstCharset,r.dstLineFeed
+,r.footerdel from FileInfos as f inner join Routes as r on f.routeId=r.routeId;

@@ -9,5 +9,5 @@ public class FtpServer {
     String userid;
     String passwd;
     Boolean isPassive;
-}
 
+}

@@ -10,26 +10,47 @@ services:
   #   volumes:
   #     - ./:/Camel2/
   #   working_dir: /Camel2/
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: camel
+      MYSQL_USER: apl
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_TCP_PORT: 3306
+    ports:
+      - 3306:3306
+    # volumes:
+    #   - ./logdb/my.cnf:/etc/mysql/conf.d/my.cnf
+    #   - ./logdb/init:/docker-entrypoint-initdb.d
+    container_name: mysql
+    restart: always
   ftpSrv1:
     image: stilliard/pure-ftpd:latest
     ports:
       - "21:21"
-      - "30000-30009:30000-30009"
+      - "20:20"
+      - "30000-30050:30000-30050"
     environment:
       - PUBLICHOST=ftpSrv1
+      - FTP_PASSIVE_PORTS=30000:30050
       - FTP_USER_NAME=foo1
       - FTP_USER_PASS=bar1
       - FTP_USER_HOME=/home/foo
+      - FTP_MAX_CLIENTS=20
+      - FTP_MAX_CONNECTIONS=20
   ftpSrv2:
     image: stilliard/pure-ftpd:latest
     ports:
       - "121:21"
-      - "40000-40009:30000-30009"
+      - "120:20"
+      - "40000-40009:40000-40009"
     environment:
       - PUBLICHOST=ftpSrv2
+      - FTP_PASSIVE_PORTS=40000:40009
       - FTP_USER_NAME=foo2
       - FTP_USER_PASS=bar2
-      - FTP_USER_HOME=/home/foo
+      - FTP_USER_HOME=/home/foo2
   sftpSrv1:
     image: atmoz/sftp
     ports:
