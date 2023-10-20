@@ -17,14 +17,12 @@ public class Producer extends EndpointRouteBuilder {
   @Override
   public void configure() throws Exception {
     onException(EmptyResultDataAccessException.class) // DBに該当レコードが見つからない例外をキャッチしたら
-        .log(LoggingLevel.WARN, "DBにデータが見つかりませんでした") 
-        .handled(false)// スタックトレースは出さない（システムエラー扱いにはしない）場合はTRUE
+        .log(LoggingLevel.WARN, "DBにデータが見つかりませんでした").handled(false)// スタックトレースは出さない（システムエラー扱いにはしない）場合はTRUE
         .end();
 
     onException(UnexpectedDataFoundException.class) // DBに該当レコードが見つからない例外をキャッチしたら
         .handled(false)// システム例外にする
-        .log(LoggingLevel.ERROR, "!!!!!予期せぬデータが見つかりました") 
-        .end();
+        .log(LoggingLevel.ERROR, "!!!!!予期せぬデータが見つかりました").end();
 
     onException(Exception.class) // その他の予期しない例外をキャッチしたら
         .maximumRedeliveries(5) // 最大５回のリトライ
@@ -47,7 +45,6 @@ public class Producer extends EndpointRouteBuilder {
           String targetStr = getTargetURL.byRouteInfoInExchangeHeader(exchange);
           exchange.getIn().setHeader("targetStr", targetStr);// 荷物のヘッダに埋める
         }).toD("${in.headers.targetStr}")// 宛先URLへ配送
-        .log("${in.headers.targetStr}").log("${file:name} is FTP Transfered")
-        .end();
+        .log("${in.headers.targetStr}").log("${file:name} is FTP Transfered").end();
   }
 }

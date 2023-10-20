@@ -30,7 +30,8 @@ public class SrcFileInfoDao {
         + " from FilesRoutes where srcNodeId=? and srcPath=? and srcfilename=? and srcFileNameExt=?";
     RowMapper<SrcFileInfo> rowMapper = new BeanPropertyRowMapper<>(SrcFileInfo.class);
     try {
-      SrcFileInfo srcFileInfo = jdbcTemplate.queryForObject(sql, rowMapper, srcNodeId, srcPath, srcFileName,srcFileNameExt);
+      SrcFileInfo srcFileInfo = jdbcTemplate.queryForObject(sql, rowMapper, srcNodeId, srcPath, srcFileName,
+          srcFileNameExt);
       return srcFileInfo;
     } catch (Exception e) {
       log.warn(sql + "  Args :  " + srcNodeId + "," + srcPath + "," + srcFileName + "," + srcFileNameExt);

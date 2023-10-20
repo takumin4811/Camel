@@ -40,8 +40,8 @@ public class HelloRestController {
   }
 
   @GetMapping(value = "/api2/{nodeId}/{srcPath}") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
-  public Responce apiRequestByFileName(@PathVariable("nodeId") String nodeId,
-      @PathVariable("srcPath") String srcPath, @RequestParam("srcFileNameWithExt") String srcFileNameWithExt) {
+  public Responce apiRequestByFileName(@PathVariable("nodeId") String nodeId, @PathVariable("srcPath") String srcPath,
+      @RequestParam("srcFileNameWithExt") String srcFileNameWithExt) {
     RouteInfo routeInfo = getRouteInfo.bySrcFileName(nodeId, srcPath, srcFileNameWithExt);
     return commonLogic(routeInfo);
   }
@@ -53,12 +53,12 @@ public class HelloRestController {
       endpointURL = getConsumeURL.byRouteInfo(routeInfo);
     } catch (UnexpectedDataFoundException e) {
       log.error(e.getMessage());
-      return new Responce("Error","Cannot GetConsumerURL because UnexpectedDataFound");
+      return new Responce("Error", "Cannot GetConsumerURL because UnexpectedDataFound");
     }
     log.info("<ConsumeEndpointURL>" + endpointURL);
     Exchange exchange = consumerTemplate.receive(endpointURL, 10);
     if (exchange == null) {
-      return new Responce("Warn",routeInfo.getSrcFileSimpleInfo() + " is not found");
+      return new Responce("Warn", routeInfo.getSrcFileSimpleInfo() + " is not found");
     }
     exchange.getIn().setHeader("routeInfo", routeInfo);
     convertAndRename.call(exchange);
@@ -66,10 +66,10 @@ public class HelloRestController {
     producerTemplate.send("direct:DistributionCenter", exchange);
 
     if (exchange.getException() != null) {
-      return new Responce("Error",exchange.getException().getMessage());
+      return new Responce("Error", exchange.getException().getMessage());
     }
 
-    return new Responce("OK","Request is Completed");
+    return new Responce("OK", "Request is Completed");
   }
 
 }

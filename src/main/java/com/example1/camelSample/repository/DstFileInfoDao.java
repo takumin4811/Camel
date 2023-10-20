@@ -15,14 +15,14 @@ public class DstFileInfoDao {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-
   public DstFileInfo getDstFileInfoBySrcFileName(String srcNodeId, String srcPath, String srcFileName,
       String srcFileNameExt) {
     String sql = "SELECT routeId ,fileId,dstNodeId,dstPath,dstfileName,dstFileNameExt,dstFileNameTrgExt,dstLinefeed,dstCharset,footerdel,RegexKbn"
         + " from FilesRoutes where srcNodeId=? and srcPath=? and srcfilename=? and srcFileNameExt=?";
     RowMapper<DstFileInfo> rowMapper = new BeanPropertyRowMapper<>(DstFileInfo.class);
     try {
-      DstFileInfo dstFileInfo = jdbcTemplate.queryForObject(sql, rowMapper, srcNodeId, srcPath, srcFileName,srcFileNameExt);
+      DstFileInfo dstFileInfo = jdbcTemplate.queryForObject(sql, rowMapper, srcNodeId, srcPath, srcFileName,
+          srcFileNameExt);
       return dstFileInfo;
     } catch (Exception e) {
       log.warn(sql + "  Args :  " + srcNodeId + "," + srcPath + "," + srcFileName + "," + srcFileNameExt);
@@ -42,6 +42,5 @@ public class DstFileInfoDao {
       throw e;
     }
   }
-
 
 }

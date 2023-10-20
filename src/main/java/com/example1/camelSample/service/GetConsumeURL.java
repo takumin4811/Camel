@@ -19,31 +19,27 @@ public class GetConsumeURL {
 
   public String byRouteInfo(RouteInfo r) throws UnexpectedDataFoundException {
     NodeType nodeType = r.getSrcNodeType();
-    if (nodeType.equals(NodeType.LOCAL)){
+    if (nodeType.equals(NodeType.LOCAL)) {
       String fileName = r.getSrcFileInfo().getFileNameWithExt();
       String filePath = r.getSrcFileInfo().getFilePath();
-      String endpointURL = "file://"+filePath
-          + "?filename=" + fileName
+      String endpointURL = "file://" + filePath + "?filename=" + fileName
           + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
           + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}";
-      log.info("endpointURL:"+endpointURL);
+      log.info("endpointURL:" + endpointURL);
       return endpointURL;
     }
-    if (nodeType.equals(NodeType.LOCAL)){
+    if (nodeType.equals(NodeType.LOCAL)) {
       FtpServer f = ftpServerDao.getFTPServerInfo(r.getSrcFileInfo().getSrcNodeId());
       String fileName = r.getSrcFileInfo().getFileNameWithExt();
       String filePath = r.getSrcFileInfo().getFilePath();
-      String endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost() + "/"  + filePath  
-          + "?"
-          + "&password=" + f.getPasswd() + "&passiveMode=" + f.getIsPassive() 
-          + "?filename=" + fileName
+      String endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost() + "/" + filePath + "?" + "&password="
+          + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "?filename=" + fileName
           + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
           + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss";
-      log.info("endpointURL:"+endpointURL);
-      return endpointURL;     
-    }
-    else{
-      throw new UnexpectedDataFoundException("unknown NodeType Error:"+nodeType);
+      log.info("endpointURL:" + endpointURL);
+      return endpointURL;
+    } else {
+      throw new UnexpectedDataFoundException("unknown NodeType Error:" + nodeType);
     }
   }
 }

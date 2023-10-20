@@ -15,7 +15,6 @@ public class PollingNodeDao {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-
   public List<PollingNode> getPollingNodes() {
     String sql = " SELECT N.nodeId,nodetype,host,port,userid,passwd,isPassive,pollingDirectory,PollingRecursive,PollingTrgName FROM PollingNodes as P inner join Nodes as N on N.nodeId=P.nodeId";
     log.info(sql);

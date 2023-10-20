@@ -41,17 +41,17 @@ public class GetRouteInfo {
     DstFileInfo dstFileInfo = dstFileInfoDao.getDstFileInfoBySrcFileId(fileId);
     NodeType srcNodeType = db.getNodeTypeByNodeId(srcFileInfo.getSrcNodeId());
     NodeType dstNodeType = db.getNodeTypeByNodeId(dstFileInfo.getDstNodeId());
-    renameDstRedexFileName(srcFileInfo,dstFileInfo);
+    renameDstRedexFileName(srcFileInfo, dstFileInfo);
     return new RouteInfo(srcFileInfo, dstFileInfo, srcNodeType, dstNodeType);
   }
 
   public RouteInfo bySrcFileName(String srcNodeId, String srcPath, String srcFileNameWithExt) {
     String srcFileName = srcFileNameWithExt.substring(0, srcFileNameWithExt.lastIndexOf('.'));
     String srcFileNameExt = srcFileNameWithExt.substring(srcFileNameWithExt.lastIndexOf(".") + 1);
-    RouteInfo r=bySrcFileName(srcNodeId, srcPath, srcFileName, srcFileNameExt);
+    RouteInfo r = bySrcFileName(srcNodeId, srcPath, srcFileName, srcFileNameExt);
     return r;
   }
-  
+
   public RouteInfo bySrcFileName(String srcNodeId, String srcPath, String srcFileName, String srcFileNameExt) {
     Integer i = db.countFileRoutes(srcNodeId, srcPath, srcFileName, srcFileNameExt);
     if (i.equals(0)) {
@@ -64,8 +64,10 @@ public class GetRouteInfo {
         }
       }
     }
-    SrcFileInfo srcFileInfo = srcFileInfoDao.getSrcFileInfoBySrcFileName(srcNodeId, srcPath, srcFileName, srcFileNameExt);
-    DstFileInfo dstFileInfo = dstFileInfoDao.getDstFileInfoBySrcFileName(srcNodeId, srcPath, srcFileName, srcFileNameExt);
+    SrcFileInfo srcFileInfo = srcFileInfoDao.getSrcFileInfoBySrcFileName(srcNodeId, srcPath, srcFileName,
+        srcFileNameExt);
+    DstFileInfo dstFileInfo = dstFileInfoDao.getDstFileInfoBySrcFileName(srcNodeId, srcPath, srcFileName,
+        srcFileNameExt);
     NodeType srcNodeType = db.getNodeTypeByNodeId(srcFileInfo.getSrcNodeId());
     NodeType dstNodeType = db.getNodeTypeByNodeId(dstFileInfo.getDstNodeId());
     return new RouteInfo(srcFileInfo, dstFileInfo, srcNodeType, dstNodeType);
@@ -75,7 +77,5 @@ public class GetRouteInfo {
     log.info(srcFileInfo.getFileNameWithExt());
     log.info(dstFileInfo.getFileNameWithExt());
   }
-  
-  
-  
+
 }

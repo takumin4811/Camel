@@ -14,7 +14,7 @@ public class DB {
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
-  public  NodeType getNodeTypeByNodeId(String nodeId) {
+  public NodeType getNodeTypeByNodeId(String nodeId) {
     String sql = "SELECT nodetype from Nodes where nodeId=? ";
     try {
       String s = jdbcTemplate.queryForObject(sql, String.class, nodeId);

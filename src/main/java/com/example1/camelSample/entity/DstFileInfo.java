@@ -24,5 +24,4 @@ public class DstFileInfo {
     return dstPath + "/" + dstfileName + "." + dstFileNameExt;
   }
 
-
 }

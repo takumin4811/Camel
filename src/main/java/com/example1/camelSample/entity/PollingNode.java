@@ -24,22 +24,21 @@ public class PollingNode {
     if (this.nodetype.equals("ftp")) {
       return getFtpPolingString();
     } else {
-      throw new UnexpectedDataFoundException("unknown NodeType Error:"+this.nodetype);
+      throw new UnexpectedDataFoundException("unknown NodeType Error:" + this.nodetype);
     }
   }
 
   private String getLocalPolingString() {
-    return  "file://" + pollingDirectory + "?doneFileName=" + "${file:name.noext}." + pollingTrgName + "&recursive="
+    return "file://" + pollingDirectory + "?doneFileName=" + "${file:name.noext}." + pollingTrgName + "&recursive="
         + pollingRecursive + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
         + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}";
   }
 
   private String getFtpPolingString() {
-    return  "ftp://" + userid + "@" + host + ":" + port + "/" + pollingDirectory + "?password=" + passwd
+    return "ftp://" + userid + "@" + host + ":" + port + "/" + pollingDirectory + "?password=" + passwd
         + "&passiveMode=" + isPassive + "&doneFileName=" + "${file:name.noext}." + pollingTrgName + "&recursive="
         + pollingRecursive + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
         + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}" + "&localworkdirectory=/tmp/";
   }
-
 
 }
