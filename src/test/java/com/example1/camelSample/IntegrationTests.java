@@ -133,6 +133,22 @@ class IntegrationTests {
         assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
     }
 
+    @Test
+    @DisplayName("FTPGET-FTPPUT")
+    void F07FTPGETtoFTPPUT() throws Exception {
+        Exchange origin = consumer
+                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+        producer.send("ftp://foo1@localhost/./07?password=bar1&passiveMode=true&fileName=f07-utf-lf.dat&doneFileName=f07-utf-lf.trg", origin);
+        Thread.sleep(WAITTIME);
+
+        Exchange outputEx = consumer.receiveNoWait(
+                "ftp://foo1@localhost/./to/07?password=bar1&passiveMode=true&fileName=F07-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
+        File output = outputEx.getIn().getBody(File.class);
+        File expected = new File("./test/testfile-utf8.dat");
+        assertEquals(true, output.exists());
+        assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
+    }
+
     // 'RT08','nodeA','正規表現パターン','./08','utf8','LF','nodeA','./test/to/08','utf8','LF',0);
     // F08','正規表現パターン','f08-utf-lf.*','dat','trg','F01-UTF-LF-*-A','DAT','TRG','RT08','Trigger',1);
     @ParameterizedTest

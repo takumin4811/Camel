@@ -24,7 +24,7 @@ public class GetTargetURL {
 
     if (r.getDstNodeType().equals(NodeType.FTP)) {
       FtpServer f = ftpServerDao.getFTPServerInfo(r.getDstFileInfo().getDstNodeId());
-      targetStr = "ftp://" + f.getUserid() + "@" + f.getHost() + "/" + r.getDstFileInfo().getDstPath() + "?"
+      targetStr = "ftp://" + f.getUserid() + "@" + f.getHost() +":"+ f.getPort() + "/" + r.getDstFileInfo().getDstPath() + "?"
           + "password=" + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&flatten=true" + getDoneFileName(r);
       return targetStr;
     }

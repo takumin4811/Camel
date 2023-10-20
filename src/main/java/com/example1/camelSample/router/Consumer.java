@@ -58,7 +58,7 @@ public class Consumer extends EndpointRouteBuilder {
             String fileNameWithExt = exchange.getIn().getHeader("CamelFileNameOnly").toString();
             String fileName = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.'));
             String fileNameExt = fileNameWithExt.substring(fileNameWithExt.lastIndexOf(".") + 1);
-
+ 
             RouteInfo routeInfo = getRouteInfo.bySrcFileName(srcNodeId, filePath, fileName, fileNameExt);
             exchange.getIn().setHeader("routeInfo", routeInfo);
             log.info(exchange.getIn().getHeaders().toString());
