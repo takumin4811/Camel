@@ -42,10 +42,10 @@ class RestIntegrationTests {
 
         String url =baseurl+"/api/?fileId=F101";
         String expectedStr="""
-        {"Status":"OK","Infomation":"Request is Completed"}""";
+        {"status":"OK","message":"Request is Completed"}""";
         
         this.client.get().uri(url)
-        .accept(MediaType.APPLICATION_JSON)
+        // .accept(MediaType.APPLICATION_JSON)
         .exchange()
         .expectBody(String.class).isEqualTo(expectedStr);  
 

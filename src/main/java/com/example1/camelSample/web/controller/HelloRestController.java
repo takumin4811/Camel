@@ -1,9 +1,6 @@
 
 package com.example1.camelSample.web.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
@@ -13,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example1.camelSample.entity.Responce;
 import com.example1.camelSample.entity.RouteInfo;
 import com.example1.camelSample.exception.UnexpectedDataFoundException;
 import com.example1.camelSample.service.ConvertAndRename;
@@ -36,57 +34,42 @@ public class HelloRestController {
   private ConsumerTemplate consumerTemplate;
 
   @GetMapping(value = "/api/") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
-  public Map<String, String> apiRequest(@RequestParam("fileId") String fileId) {
+  public Responce apiRequest(@RequestParam("fileId") String fileId) {
     RouteInfo routeInfo = getRouteInfo.byFileId(fileId);
     return commonLogic(routeInfo);
   }
 
   @GetMapping(value = "/api2/{nodeId}/{srcPath}") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
-  public Map<String, String> apiRequestByFileName(@PathVariable("nodeId") String nodeId,
+  public Responce apiRequestByFileName(@PathVariable("nodeId") String nodeId,
       @PathVariable("srcPath") String srcPath, @RequestParam("srcFileNameWithExt") String srcFileNameWithExt) {
     RouteInfo routeInfo = getRouteInfo.bySrcFileName(nodeId, srcPath, srcFileNameWithExt);
     return commonLogic(routeInfo);
   }
 
-  private Map<String, String> commonLogic(RouteInfo routeInfo) {
+  private Responce commonLogic(RouteInfo routeInfo) {
     String endpointURL = "";
-    Map<String, String> res = new HashMap<>();
 
     try {
       endpointURL = getConsumeURL.byRouteInfo(routeInfo);
     } catch (UnexpectedDataFoundException e) {
       log.error(e.getMessage());
-      String s = "Cannot GetConsumerURL because UnexpectedDataFound";
-      log.error(s);
-      res.put("Status", "NG");
-      res.put("Infomation", s);
-      return res;
+      return new Responce("Error","Cannot GetConsumerURL because UnexpectedDataFound");
     }
     log.info("<ConsumeEndpointURL>" + endpointURL);
     Exchange exchange = consumerTemplate.receive(endpointURL, 10);
     if (exchange == null) {
-      String s = routeInfo.getSrcFileSimpleInfo() + " is not found";
-      log.warn(s);
-      res.put("Status", "NG");
-      res.put("Infomation", s);
-      return res;
+      return new Responce("Warn",routeInfo.getSrcFileSimpleInfo() + " is not found");
     }
     exchange.getIn().setHeader("routeInfo", routeInfo);
     convertAndRename.call(exchange);
 
     producerTemplate.send("direct:DistributionCenter", exchange);
+
     if (exchange.getException() != null) {
-      String s = exchange.getException().getMessage();
-      log.error(s);
-      res.put("Status", "NG");
-      res.put("Infomation", s);
-      return res;
+      return new Responce("Error",exchange.getException().getMessage());
     }
-    String s = "Request is Completed";
-    log.info(s);
-    res.put("Status", "OK");
-    res.put("Infomation", s);
-    return res;
+
+    return new Responce("OK","Request is Completed");
   }
 
 }

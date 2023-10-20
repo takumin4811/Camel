@@ -19,8 +19,7 @@ public class GetTargetURL {
   FtpServerDao ftpServerDao;
 
   public String byRouteInfoInExchangeHeader(Exchange exchange) throws Exception {
-    RouteInfo r = (RouteInfo) exchange.getIn().getHeader("routeInfo");
- 
+    RouteInfo r = (RouteInfo) exchange.getIn().getHeader("routeInfo"); 
     String targetStr ="";
 
     if (r.getDstNodeType().equals(NodeType.FTP)){
@@ -28,13 +27,12 @@ public class GetTargetURL {
       targetStr = "ftp://" + f.getUserid() + "@" + f.getHost() + "/" + r.getDstFileInfo().getDstPath() + "?"
           + "password=" + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&flatten=true"
           + getDoneFileName(r);
-      log.info(targetStr);
       return targetStr;
     }
     if (r.getDstNodeType().equals(NodeType.LOCAL)){
       r.getDstFileInfo().getDstFileNameExt();
       targetStr = "file:"+r.getDstFileInfo().getDstPath()+ "?flatten=true" +getDoneFileName(r);
-       return targetStr;
+      return targetStr;
     }
     else{
       log.error("Error:"+ r.getDstFileInfo());

@@ -45,7 +45,6 @@ public class GetRouteInfo {
     return new RouteInfo(srcFileInfo, dstFileInfo, srcNodeType, dstNodeType);
   }
 
-  
   public RouteInfo bySrcFileName(String srcNodeId, String srcPath, String srcFileNameWithExt) {
     String srcFileName = srcFileNameWithExt.substring(0, srcFileNameWithExt.lastIndexOf('.'));
     String srcFileNameExt = srcFileNameWithExt.substring(srcFileNameWithExt.lastIndexOf(".") + 1);
@@ -75,7 +74,6 @@ public class GetRouteInfo {
   private void renameDstRedexFileName(SrcFileInfo srcFileInfo, DstFileInfo dstFileInfo) {
     log.info(srcFileInfo.getFileNameWithExt());
     log.info(dstFileInfo.getFileNameWithExt());
-
   }
   
   

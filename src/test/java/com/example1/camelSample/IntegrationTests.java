@@ -18,12 +18,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.commons.io.FileUtils;
-
 
 @CamelSpringBootTest
 @SpringBootTest
@@ -166,9 +162,8 @@ class IntegrationTests {
     void F09正規表現パターン2(String strings) throws Exception {
         Exchange origin = consumer
                 .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
-        String sendurl = "file://./test/from/09?fileName=f09-utf-" + strings + ".dat"
-        +"&doneFileName=f09-utf-" + strings + ".trg"
-        ;
+        String sendurl = "file://./test/from/09?fileName=f09-utf-" + strings + ".dat" + "&doneFileName=f09-utf-"
+                + strings + ".trg";
         producer.send(sendurl, origin);
         Thread.sleep(WAITTIME);
         File output;
@@ -177,7 +172,7 @@ class IntegrationTests {
 
         outputEx = consumer.receiveNoWait("ftp://foo1@localhost/./09?password=bar1&passiveMode=true&fileName=F09-UTF-"
                 + strings.toUpperCase() + "-A.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
-        
+
         if (strings.startsWith("lf")) {
             output = outputEx.getIn().getBody(File.class);
             expected = new File("./test/testfile-utf8.dat");
@@ -188,6 +183,5 @@ class IntegrationTests {
         }
 
     }
-
 
 }
