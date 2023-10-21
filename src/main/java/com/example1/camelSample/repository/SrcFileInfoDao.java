@@ -2,6 +2,7 @@ package com.example1.camelSample.repository;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,7 +34,7 @@ public class SrcFileInfoDao {
       SrcFileInfo srcFileInfo = jdbcTemplate.queryForObject(sql, rowMapper, srcNodeId, srcPath, srcFileName,
           srcFileNameExt);
       return srcFileInfo;
-    } catch (Exception e) {
+    } catch (EmptyResultDataAccessException e) {
       log.warn(sql + "  Args :  " + srcNodeId + "," + srcPath + "," + srcFileName + "," + srcFileNameExt);
       throw e;
     }
@@ -46,7 +47,7 @@ public class SrcFileInfoDao {
     try {
       SrcFileInfo srcFileInfo = jdbcTemplate.queryForObject(sql, rowMapper, fileId);
       return srcFileInfo;
-    } catch (Exception e) {
+    } catch (EmptyResultDataAccessException e) {
       log.warn(sql + "  Args :  " + fileId);
       throw e;
     }

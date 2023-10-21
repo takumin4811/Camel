@@ -1,6 +1,7 @@
 package com.example1.camelSample.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +20,7 @@ public class DB {
     try {
       String s = jdbcTemplate.queryForObject(sql, String.class, nodeId);
       return NodeType.valueOf(s.toUpperCase());
-    } catch (Exception e) {
+    } catch (EmptyResultDataAccessException e) {
       log.warn(sql + "  Args :  " + nodeId);
       throw e;
     }

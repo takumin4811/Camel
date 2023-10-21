@@ -12,7 +12,7 @@ public class RouteInfo {
   NodeType dstNodeType;
 
   public String getSrcFileSimpleInfo() {
-    return "[" + srcNodeType + "]" + srcFileInfo.getSrcNodeId() + "://" + srcFileInfo.getFilePathAndNameWithExt();
+    return "[" + srcNodeType + "]" + srcFileInfo.getSrcNodeId() + "::" + srcFileInfo.getFilePathAndNameWithExt();
   }
 
 }

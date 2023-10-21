@@ -28,14 +28,12 @@ public class GetConsumeURL {
       log.info("endpointURL:" + endpointURL);
       return endpointURL;
     }
-    if (nodeType.equals(NodeType.LOCAL)) {
+    if (nodeType.equals(NodeType.FTP)) {
       FtpServer f = ftpServerDao.getFTPServerInfo(r.getSrcFileInfo().getSrcNodeId());
       String fileName = r.getSrcFileInfo().getFileNameWithExt();
       String filePath = r.getSrcFileInfo().getFilePath();
-      String endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost() + "/" + filePath + "?" + "&password="
-          + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "?filename=" + fileName
-          + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
-          + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss";
+      String endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost()+":"+ f.getPort() + "/" + filePath + "?" + "password="
+          + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&filename=" + fileName+"&noop=true&localworkdirectory=/tmp/";
       log.info("endpointURL:" + endpointURL);
       return endpointURL;
     } else {

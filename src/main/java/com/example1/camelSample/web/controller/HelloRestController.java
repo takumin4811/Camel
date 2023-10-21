@@ -5,6 +5,7 @@ import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,10 +40,18 @@ public class HelloRestController {
     return commonLogic(routeInfo);
   }
 
-  @GetMapping(value = "/api2/{nodeId}/{srcPath}") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
-  public Responce apiRequestByFileName(@PathVariable("nodeId") String nodeId, @PathVariable("srcPath") String srcPath,
+  @GetMapping(value = "/api/{nodeId}") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
+  public Responce apiRequestByFileName(@PathVariable("nodeId") String nodeId, @RequestParam("srcPath") String srcPath,
       @RequestParam("srcFileNameWithExt") String srcFileNameWithExt) {
-    RouteInfo routeInfo = getRouteInfo.bySrcFileName(nodeId, srcPath, srcFileNameWithExt);
+    log.info(nodeId);
+    log.info(srcPath);
+    RouteInfo routeInfo;
+    try {
+      routeInfo = getRouteInfo.bySrcFileName(nodeId, srcPath, srcFileNameWithExt);
+    } catch (EmptyResultDataAccessException e) {
+      log.warn(e.getMessage());
+      return new Responce("Warn", "Cannot GetRouteInfo because DataIsNotFound");
+    }
     return commonLogic(routeInfo);
   }
 

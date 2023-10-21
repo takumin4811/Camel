@@ -33,7 +33,7 @@ class RestIntegrationTests {
     private String testdir;
 
     @Test
-    void F101単純コピーリクエスト() throws Exception {
+    void F101単純コピーリクエスト_FILDID指定() throws Exception {
         String baseurl = "http://localhost:" + port;
         Exchange origin = consumer
                 .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
@@ -48,6 +48,43 @@ class RestIntegrationTests {
                 .exchange().expectBody(String.class).isEqualTo(expectedStr);
 
         File output = new File("./test/to/101/F101-UTF-LF.DAT");
+        File expected = new File("./test/testfile-utf8.dat");
+        assertEquals(true, output.exists());
+        assertEquals(FileUtils.readFileToString(output, "UTF-8"), (FileUtils.readFileToString(expected, "UTF-8")));
+    }
+    @Test
+    void F101単純コピーリクエスト_FILDNAME指定() throws Exception {
+        String baseurl = "http://localhost:" + port;
+        Exchange origin = consumer
+                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+        producer.send("file://./test/from/101?fileName=f101-utf-lf.dat", origin);
+
+        String url = baseurl + "/api/nodeA?srcPath=./test/from/101&srcFileNameWithExt=f101-utf-lf.dat";
+        String expectedStr = """
+                {"status":"OK","message":"Request is Completed"}""";
+
+        this.client.get().uri(url)
+                .exchange().expectBody(String.class).isEqualTo(expectedStr);
+
+        File output = new File("./test/to/101/F101-UTF-LF.DAT");
+        File expected = new File("./test/testfile-utf8.dat");
+        assertEquals(true, output.exists());
+        assertEquals(FileUtils.readFileToString(output, "UTF-8"), (FileUtils.readFileToString(expected, "UTF-8")));
+    }
+    @Test
+    void F102リモートからの取得リクエスト() throws Exception {
+        String baseurl = "http://localhost:" + port;
+        Exchange origin = consumer
+                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+        producer.send("ftp://foo1@localhost:21/./102?password=bar1&passiveMode=true&fileName=f102-utf-lf.dat", origin);
+        String url = baseurl + "/api/nodeB?srcPath=/102&srcFileNameWithExt=f102-utf-lf.dat";
+        String expectedStr = """
+                {"status":"OK","message":"Request is Completed"}""";
+
+        this.client.get().uri(url)
+                .exchange().expectBody(String.class).isEqualTo(expectedStr);
+
+        File output = new File("./test/to/102/F102-UTF-LF.DAT");
         File expected = new File("./test/testfile-utf8.dat");
         assertEquals(true, output.exists());
         assertEquals(FileUtils.readFileToString(output, "UTF-8"), (FileUtils.readFileToString(expected, "UTF-8")));
