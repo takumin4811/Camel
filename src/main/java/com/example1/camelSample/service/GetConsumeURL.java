@@ -22,10 +22,17 @@ public class GetConsumeURL {
     if (nodeType.equals(NodeType.LOCAL)) {
       String fileName = r.getSrcFileInfo().getFileNameWithExt();
       String filePath = r.getSrcFileInfo().getFilePath();
-      String endpointURL = "file://" + filePath + "?filename=" + fileName
-          + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
-          + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}";
-      log.info("endpointURL:" + endpointURL);
+      String endpointURL;
+      if (r.getSrcFileInfo().getRegexKbn()==0){
+        endpointURL = "file://" + filePath + "?filename=" + fileName
+            + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
+            + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}";
+      }else{
+        String antfileName=fileName.replace("(.*)", "*");
+        endpointURL = "file://" + filePath + "?antInclude=" + antfileName
+            + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
+            + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}";
+      }
       return endpointURL;
     }
     if (nodeType.equals(NodeType.FTP)) {
@@ -34,10 +41,11 @@ public class GetConsumeURL {
       String filePath = r.getSrcFileInfo().getFilePath();
       String endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost()+":"+ f.getPort() + "/" + filePath + "?" + "password="
           + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&filename=" + fileName+"&noop=true&localworkdirectory=/tmp/";
-      log.info("endpointURL:" + endpointURL);
       return endpointURL;
     } else {
       throw new UnexpectedDataFoundException("unknown NodeType Error:" + nodeType);
     }
   }
+
+
 }

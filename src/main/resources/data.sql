@@ -10,7 +10,7 @@ insert into Routes values ('RT08','正規表現パターン','nodeA','./test/fro
 insert into Routes values ('RT09','正規表現パターン2','nodeA','./test/from/09','utf8','LF','nodeB','./09','utf8','LF',0);
 insert into Routes values ('RT101','単純コピーリクエスト','nodeA','./test/from/101','utf8','LF','nodeA','./test/to/101','utf8','LF',0);
 insert into Routes values ('RT102','リモートからの取得リクエスト','nodeB','/102','utf8','LF','nodeA','./test/to/102','utf8','LF',0);
-insert into Routes values ('RT103','コピーリクエスト(正規表現）','nodeA','./test/from/103','utf8','LF','nodeA','./test/to/103','utf8','LF',0);
+insert into Routes values ('RT103','コピーリクエスト(正規表現）','nodeA','./test/from/103','utf8','LF','nodeB','./test/to/103','utf8','LF',0);
 
 insert into Nodes values ('nodeA','local','',null,'','',null);
 insert into Nodes values ('nodeB','ftp','localhost','21','foo1','bar1',true);
@@ -32,5 +32,5 @@ insert into FileInfos values ('F09','正規表現パターン2','f09-utf-lf(.*)'
 
 insert into FileInfos values ('F101','単純コピーリクエスト','f101-utf-lf','dat','trg','F101-UTF-LF','DAT','TRG','RT101','',0);
 insert into FileInfos values ('F102','リモートからの取得リクエスト','f102-utf-lf','dat','trg','F102-UTF-LF','DAT','TRG','RT102','',0);
-insert into FileInfos values ('F103','コピーリクエスト(正規表現）','f103-utf-lf(.*)','dat','trg','F103-UTF-LF','DAT','TRG','RT103','',0);
+insert into FileInfos values ('F103','コピーリクエスト(正規表現）','f103-utf-lf(.*)','dat','trg','F103-UTF-LF$1','DAT','TRG','RT103','',1);
 

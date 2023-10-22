@@ -43,8 +43,6 @@ public class HelloRestController {
   @GetMapping(value = "/api/{nodeId}") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
   public Responce apiRequestByFileName(@PathVariable("nodeId") String nodeId, @RequestParam("srcPath") String srcPath,
       @RequestParam("srcFileNameWithExt") String srcFileNameWithExt) {
-    log.info(nodeId);
-    log.info(srcPath);
     RouteInfo routeInfo;
     try {
       routeInfo = getRouteInfo.bySrcFileName(nodeId, srcPath, srcFileNameWithExt);
@@ -52,12 +50,18 @@ public class HelloRestController {
       log.warn(e.getMessage());
       return new Responce("Warn", "Cannot GetRouteInfo because DataIsNotFound");
     }
-    return commonLogic(routeInfo);
+    if (routeInfo.getSrcFileInfo().getRegexKbn() == 0) {
+      return commonLogic(routeInfo);
+    } else {
+      return commonLogic(routeInfo);
+    }
   }
 
   private Responce commonLogic(RouteInfo routeInfo) {
     String endpointURL = "";
-
+    Exchange exchange;
+    Integer numberOfFiles = 0;
+    Responce okResponce = new Responce("OK", "");
     try {
       endpointURL = getConsumeURL.byRouteInfo(routeInfo);
     } catch (UnexpectedDataFoundException e) {
@@ -65,20 +69,30 @@ public class HelloRestController {
       return new Responce("Error", "Cannot GetConsumerURL because UnexpectedDataFound");
     }
     log.info("<ConsumeEndpointURL>" + endpointURL);
-    Exchange exchange = consumerTemplate.receive(endpointURL, 10);
-    if (exchange == null) {
+
+    do{
+      exchange = consumerTemplate.receive(endpointURL, 10);
+      if (exchange == null) {
+        break;
+      }
+      exchange.getIn().setHeader("routeInfo", routeInfo);
+      convertAndRename.call(exchange);
+      producerTemplate.send("direct:DistributionCenter", exchange);
+      if (exchange.getException() != null) {
+          return new Responce("Error", exchange.getException().getMessage());
+      }
+      String camelFileNameConsumed = (String) exchange.getIn().getHeader("CamelFileNameConsumed");
+      String camelFileNameProduced = (String) exchange.getIn().getHeader("CamelFileNameProduced");
+      okResponce.addtranferedFilesList(camelFileNameConsumed, camelFileNameProduced, "OK");
+      numberOfFiles++;
+    } while(exchange!=null);
+    
+    if (numberOfFiles == 0) {
       return new Responce("Warn", routeInfo.getSrcFileSimpleInfo() + " is not found");
+    } else {
+      okResponce.setMessage("Request is Completed. "+numberOfFiles+" File Transfered");
+      return okResponce;
     }
-    exchange.getIn().setHeader("routeInfo", routeInfo);
-    convertAndRename.call(exchange);
-
-    producerTemplate.send("direct:DistributionCenter", exchange);
-
-    if (exchange.getException() != null) {
-      return new Responce("Error", exchange.getException().getMessage());
-    }
-
-    return new Responce("OK", "Request is Completed");
   }
 
 }
