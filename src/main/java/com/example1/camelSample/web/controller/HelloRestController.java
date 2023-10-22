@@ -91,6 +91,7 @@ public class HelloRestController {
       return new Responce("Warn", routeInfo.getSrcFileSimpleInfo() + " is not found");
     } else {
       okResponce.setMessage("Request is Completed. "+numberOfFiles+" File Transfered");
+      log.info(okResponce.toString());
       return okResponce;
     }
   }

@@ -19,16 +19,16 @@ public class GetConsumeURL {
 
   public String byRouteInfo(RouteInfo r) throws UnexpectedDataFoundException {
     NodeType nodeType = r.getSrcNodeType();
+    String endpointURL;
     if (nodeType.equals(NodeType.LOCAL)) {
       String fileName = r.getSrcFileInfo().getFileNameWithExt();
       String filePath = r.getSrcFileInfo().getFilePath();
-      String endpointURL;
-      if (r.getSrcFileInfo().getRegexKbn()==0){
+      if (r.getSrcFileInfo().getRegexKbn() == 0) {
         endpointURL = "file://" + filePath + "?filename=" + fileName
             + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
             + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}";
-      }else{
-        String antfileName=fileName.replace("(.*)", "*");
+      } else {
+        String antfileName = fileName.replace("(.*)", "*");
         endpointURL = "file://" + filePath + "?antInclude=" + antfileName
             + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
             + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}";
@@ -39,13 +39,20 @@ public class GetConsumeURL {
       FtpServer f = ftpServerDao.getFTPServerInfo(r.getSrcFileInfo().getSrcNodeId());
       String fileName = r.getSrcFileInfo().getFileNameWithExt();
       String filePath = r.getSrcFileInfo().getFilePath();
-      String endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost()+":"+ f.getPort() + "/" + filePath + "?" + "password="
-          + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&filename=" + fileName+"&noop=true&localworkdirectory=/tmp/";
-      return endpointURL;
+      if (r.getSrcFileInfo().getRegexKbn() == 0) {
+        endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost() + ":" + f.getPort() + "/" + filePath + "?"
+            + "password=" + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&filename=" + fileName
+            + "&noop=true&localworkdirectory=/tmp/";
+      } else {
+        String antfileName = fileName.replace("(.*)", "*");
+        endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost() + ":" + f.getPort() + "/" + filePath + "?"
+            + "password=" + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&antInclude=" + antfileName
+            + "&noop=true&localworkdirectory=/tmp/";
+          }
+          return endpointURL;
     } else {
       throw new UnexpectedDataFoundException("unknown NodeType Error:" + nodeType);
     }
   }
-
 
 }

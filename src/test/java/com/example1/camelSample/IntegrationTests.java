@@ -142,7 +142,7 @@ class IntegrationTests {
         Thread.sleep(WAITTIME);
 
         Exchange outputEx = consumer.receiveNoWait(
-                "ftp://foo1@localhost/./to/07?password=bar1&passiveMode=true&fileName=F07-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
+                "ftp://foo2@localhost:121/./to/07?password=bar2&passiveMode=true&fileName=F07-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
         File output = outputEx.getIn().getBody(File.class);
         File expected = new File("./test/testfile-utf8.dat");
         assertEquals(true, output.exists());
