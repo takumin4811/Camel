@@ -52,3 +52,32 @@ select f.KidoType, f.fileId,f.RegexKbn,r.routeId,
 r.srcNodeId,r.srcPath,f.srcFileName,f.srcFileNameExt,f.srcFileNameTrgExt,r.srcCharset,r.srcLineFeed,
 r.dstNodeId,r.dstPath,f.dstFileName,f.dstFileNameExt,f.dstFileNameTrgExt,r.dstCharset,r.dstLineFeed
 ,r.footerdel from FileInfos as f inner join Routes as r on f.routeId=r.routeId;
+
+Drop table if exists TransferLogs;
+create table if not exists TransferLogs(
+    id int primary key,
+    requestId int,
+    routeId varchar(20),
+    routeIdName varchar(100) ,
+    fileId varchar(20) ,
+    fileIdName varchar(100) ,
+    srcNodeId varchar(8),
+    srcPath varchar(30),
+    srcFileName varchar(50),
+    srcFileNameExt varchar(5),
+    srcFileNameTrgExt varchar(5),
+    srcCharset varchar(10),
+    srcLinefeed varchar(8),
+    dstNodeId varchar(8),
+    dstPath varchar(30),
+    dstFileName varchar(50),
+    dstFileNameExt varchar(5),
+    dstFileNameTrgExt varchar(5),
+    dstCharset varchar(10),
+    dstLinefeed varchar(8),
+    footerdel int,
+    KidoType varchar(10),
+    result varchar(10),
+    starttime timestamp,
+    endtime timestamp
+);

@@ -9,10 +9,7 @@ import com.example1.camelSample.entity.RouteInfo;
 import com.example1.camelSample.exception.UnexpectedDataFoundException;
 import com.example1.camelSample.repository.FtpServerDao;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class GetConsumeURL {
   @Autowired
   FtpServerDao ftpServerDao;

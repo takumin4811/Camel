@@ -36,7 +36,13 @@ public class HelloRestController {
 
   @GetMapping(value = "/api/") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
   public Responce apiRequest(@RequestParam("fileId") String fileId) {
-    RouteInfo routeInfo = getRouteInfo.byFileId(fileId);
+    RouteInfo routeInfo;
+    try {
+      routeInfo = getRouteInfo.byFileId(fileId);
+    } catch (EmptyResultDataAccessException e) {
+      log.warn(e.getMessage());
+      return new Responce("Warn", "Cannot GetRouteInfo because DataIsNotFound");
+    }
     return commonLogic(routeInfo);
   }
 
@@ -50,11 +56,7 @@ public class HelloRestController {
       log.warn(e.getMessage());
       return new Responce("Warn", "Cannot GetRouteInfo because DataIsNotFound");
     }
-    if (routeInfo.getSrcFileInfo().getRegexKbn() == 0) {
-      return commonLogic(routeInfo);
-    } else {
-      return commonLogic(routeInfo);
-    }
+    return commonLogic(routeInfo);
   }
 
   private Responce commonLogic(RouteInfo routeInfo) {
