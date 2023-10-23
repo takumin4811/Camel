@@ -6,6 +6,7 @@ import lombok.Data;
 public class FtpServer {
     String nodeId;
     String host;
+    Integer port;
     String userid;
     String passwd;
     Boolean isPassive;

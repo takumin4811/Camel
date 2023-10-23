@@ -1,18 +1,17 @@
 
 package com.example1.camelSample.web.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example1.camelSample.entity.Responce;
 import com.example1.camelSample.entity.RouteInfo;
 import com.example1.camelSample.exception.UnexpectedDataFoundException;
 import com.example1.camelSample.service.ConvertAndRename;
@@ -36,57 +35,67 @@ public class HelloRestController {
   private ConsumerTemplate consumerTemplate;
 
   @GetMapping(value = "/api/") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
-  public Map<String, String> apiRequest(@RequestParam("fileId") String fileId) {
-    RouteInfo routeInfo = getRouteInfo.byFileId(fileId);
+  public Responce apiRequest(@RequestParam("fileId") String fileId) {
+    RouteInfo routeInfo;
+    try {
+      routeInfo = getRouteInfo.byFileId(fileId);
+    } catch (EmptyResultDataAccessException e) {
+      log.warn(e.getMessage());
+      return new Responce("Warn", "Cannot GetRouteInfo because DataIsNotFound");
+    }
     return commonLogic(routeInfo);
   }
 
-  @GetMapping(value = "/api2/{nodeId}/{srcPath}") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
-  public Map<String, String> apiRequestByFileName(@PathVariable("nodeId") String nodeId,
-      @PathVariable("srcPath") String srcPath, @RequestParam("srcFileNameWithExt") String srcFileNameWithExt) {
-    RouteInfo routeInfo = getRouteInfo.bySrcFileName(nodeId, srcPath, srcFileNameWithExt);
+  @GetMapping(value = "/api/{nodeId}") // HTTP（REST）リクエスト。本来はPOSTが望ましいが簡略化のためGETで
+  public Responce apiRequestByFileName(@PathVariable("nodeId") String nodeId, @RequestParam("srcPath") String srcPath,
+      @RequestParam("srcFileNameWithExt") String srcFileNameWithExt) {
+    RouteInfo routeInfo;
+    try {
+      routeInfo = getRouteInfo.bySrcFileName(nodeId, srcPath, srcFileNameWithExt);
+    } catch (EmptyResultDataAccessException e) {
+      log.warn(e.getMessage());
+      return new Responce("Warn", "Cannot GetRouteInfo because DataIsNotFound");
+    }
     return commonLogic(routeInfo);
   }
 
-  private Map<String, String> commonLogic(RouteInfo routeInfo) {
+  private Responce commonLogic(RouteInfo routeInfo) {
     String endpointURL = "";
-    Map<String, String> res = new HashMap<>();
-
+    Exchange exchange;
+    Integer numberOfFiles = 0;
+    Responce okResponce = new Responce("OK", "");
     try {
       endpointURL = getConsumeURL.byRouteInfo(routeInfo);
     } catch (UnexpectedDataFoundException e) {
       log.error(e.getMessage());
-      String s = "Cannot GetConsumerURL because UnexpectedDataFound";
-      log.error(s);
-      res.put("Status", "NG");
-      res.put("Infomation", s);
-      return res;
+      return new Responce("Error", "Cannot GetConsumerURL because UnexpectedDataFound");
     }
     log.info("<ConsumeEndpointURL>" + endpointURL);
-    Exchange exchange = consumerTemplate.receive(endpointURL, 10);
-    if (exchange == null) {
-      String s = routeInfo.getSrcFileSimpleInfo() + " is not found";
-      log.warn(s);
-      res.put("Status", "NG");
-      res.put("Infomation", s);
-      return res;
-    }
-    exchange.getIn().setHeader("routeInfo", routeInfo);
-    convertAndRename.call(exchange);
 
-    producerTemplate.send("direct:DistributionCenter", exchange);
-    if (exchange.getException() != null) {
-      String s = exchange.getException().getMessage();
-      log.error(s);
-      res.put("Status", "NG");
-      res.put("Infomation", s);
-      return res;
+    do{
+      exchange = consumerTemplate.receive(endpointURL, 10);
+      if (exchange == null) {
+        break;
+      }
+      exchange.getIn().setHeader("routeInfo", routeInfo);
+      convertAndRename.call(exchange);
+      producerTemplate.send("direct:DistributionCenter", exchange);
+      if (exchange.getException() != null) {
+          return new Responce("Error", exchange.getException().getMessage());
+      }
+      String camelFileNameConsumed = (String) exchange.getIn().getHeader("CamelFileNameConsumed");
+      String camelFileNameProduced = (String) exchange.getIn().getHeader("CamelFileNameProduced");
+      okResponce.addtranferedFilesList(camelFileNameConsumed, camelFileNameProduced, "OK");
+      numberOfFiles++;
+    } while(exchange!=null);
+    
+    if (numberOfFiles == 0) {
+      return new Responce("Warn", routeInfo.getSrcFileSimpleInfo() + " is not found");
+    } else {
+      okResponce.setMessage("Request is Completed. "+numberOfFiles+" File Transfered");
+      log.info(okResponce.toString());
+      return okResponce;
     }
-    String s = "Request is Completed";
-    log.info(s);
-    res.put("Status", "OK");
-    res.put("Infomation", s);
-    return res;
   }
 
 }

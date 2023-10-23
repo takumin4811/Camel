@@ -39,30 +39,27 @@ public class ConvertAndRename {
   @Autowired
   private Environment env;
 
- 
   public void call(Exchange exchange) {
     File f2 = this.convert(exchange);
     exchange.getIn().setBody(f2);
     String dstfilename = this.getDstFileName(exchange);
     exchange.getIn().setHeader(Exchange.FILE_NAME, dstfilename);
-    
   }
-  
+
   private String getDstFileName(Exchange exchange) {
-    RouteInfo r = (RouteInfo) exchange.getIn().getHeader("routeInfo");    
+    RouteInfo r = (RouteInfo) exchange.getIn().getHeader("routeInfo");
     String srcfilename = r.getSrcFileInfo().getFileNameWithExt();
     String dstfilename = r.getDstFileInfo().getFileNameWithExt();
-    
+
     if (dstfilename.equals("")) {
       dstfilename = srcfilename;
     }
-    
-    if (r.getSrcFileInfo().getRegexKbn()==1 || r.getDstFileInfo().getRegexKbn()==1){      
-        String srcfileNameActual = exchange.getIn().getHeader("CamelFileNameOnly").toString();
-        dstfilename=srcfileNameActual.replaceAll(srcfilename,dstfilename);
-        srcfilename=srcfileNameActual;
-    }    
 
+    if (r.getSrcFileInfo().getRegexKbn() == 1 || r.getDstFileInfo().getRegexKbn() == 1) {
+      String srcfileNameActual = exchange.getIn().getHeader("CamelFileNameOnly").toString();
+      dstfilename = srcfileNameActual.replaceAll(srcfilename, dstfilename);
+      srcfilename = srcfileNameActual;
+    }
 
     String today = env.getProperty("TODAY");
     if (today == null) {
@@ -70,23 +67,17 @@ public class ConvertAndRename {
       today = sdf.format(new Date());
     }
     dstfilename = dstfilename.replace("${DATE}", today);
-    
-    log.info("srcfilename="+srcfilename+" => dstfilename="+dstfilename);
+
+    log.info("srcfilename=" + srcfilename + " => dstfilename=" + dstfilename);
     return dstfilename;
   }
 
-  
-  private File convert(Exchange exchange) {   
-    RouteInfo r = (RouteInfo) exchange.getIn().getHeader("routeInfo");    
+  private File convert(Exchange exchange) {
+    RouteInfo r = (RouteInfo) exchange.getIn().getHeader("routeInfo");
     String lineCd = "\n";
     if (r.getDstFileInfo().getDstLinefeed().equals("CRLF")) {
       lineCd = "\r\n";
     }
-    
-    log.info("srcCharset=" + r.getSrcFileInfo().getSrcCharset() +"=>dstCharset="+r.getDstFileInfo().getDstCharset());
-    log.info("srcLinefeed=" + r.getSrcFileInfo().getSrcLinefeed() +"=>dstLinefeed="+r.getDstFileInfo().getDstLinefeed());
-    log.info("footerdel=" + r.getDstFileInfo().getFooterdel());
-    
     File f = exchange.getIn().getBody(File.class);
     List<String> lines = new ArrayList<>();
     Path tmpFile = Paths.get(tmpdirpath);

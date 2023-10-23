@@ -34,14 +34,12 @@ public class Consumer extends EndpointRouteBuilder {
   @Override
   public void configure() throws Exception {
     onException(EmptyResultDataAccessException.class) // DBに該当レコードが見つからない例外をキャッチしたら
-        .log(LoggingLevel.WARN, "DBにデータが見つかりませんでした") 
-        .handled(true)// スタックトレースは出さない（システムエラー扱いにはしない）場合はTRUE
+        .log(LoggingLevel.WARN, "DBにデータが見つかりませんでした").handled(true)// スタックトレースは出さない（システムエラー扱いにはしない）場合はTRUE
         .end();
-        
+
     onException(UnexpectedDataFoundException.class) // DBに該当レコードが見つからない例外をキャッチしたら
         .handled(false)// システム例外にする
-        .log(LoggingLevel.ERROR, "!!!!!予期せぬデータが見つかりました") 
-        .end();
+        .log(LoggingLevel.ERROR, "!!!!!予期せぬデータが見つかりました").end();
 
     onException(Exception.class) // その他の予期しない例外をキャッチしたら
         .maximumRedeliveries(1) // 最大５回のリトライ
@@ -60,7 +58,7 @@ public class Consumer extends EndpointRouteBuilder {
             String fileNameWithExt = exchange.getIn().getHeader("CamelFileNameOnly").toString();
             String fileName = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.'));
             String fileNameExt = fileNameWithExt.substring(fileNameWithExt.lastIndexOf(".") + 1);
-
+ 
             RouteInfo routeInfo = getRouteInfo.bySrcFileName(srcNodeId, filePath, fileName, fileNameExt);
             exchange.getIn().setHeader("routeInfo", routeInfo);
             log.info(exchange.getIn().getHeaders().toString());

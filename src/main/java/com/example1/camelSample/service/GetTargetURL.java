@@ -20,34 +20,28 @@ public class GetTargetURL {
 
   public String byRouteInfoInExchangeHeader(Exchange exchange) throws Exception {
     RouteInfo r = (RouteInfo) exchange.getIn().getHeader("routeInfo");
- 
-    String targetStr ="";
+    String targetStr = "";
 
-    if (r.getDstNodeType().equals(NodeType.FTP)){
+    if (r.getDstNodeType().equals(NodeType.FTP)) {
       FtpServer f = ftpServerDao.getFTPServerInfo(r.getDstFileInfo().getDstNodeId());
-      targetStr = "ftp://" + f.getUserid() + "@" + f.getHost() + "/" + r.getDstFileInfo().getDstPath() + "?"
-          + "password=" + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&flatten=true"
-          + getDoneFileName(r);
-      log.info(targetStr);
+      targetStr = "ftp://" + f.getUserid() + "@" + f.getHost() +":"+ f.getPort() + "/" + r.getDstFileInfo().getDstPath() + "?"
+          + "password=" + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&flatten=true" + getDoneFileName(r);
       return targetStr;
     }
-    if (r.getDstNodeType().equals(NodeType.LOCAL)){
+    if (r.getDstNodeType().equals(NodeType.LOCAL)) {
       r.getDstFileInfo().getDstFileNameExt();
-      targetStr = "file:"+r.getDstFileInfo().getDstPath()+ "?flatten=true" +getDoneFileName(r);
-       return targetStr;
+      targetStr = "file:" + r.getDstFileInfo().getDstPath() + "?flatten=true" + getDoneFileName(r);
+      return targetStr;
+    } else {
+      log.error("Error:" + r.getDstFileInfo());
+      throw new UnexpectedDataFoundException("unknown NodeType Error:" + r.getDstNodeType());
     }
-    else{
-      log.error("Error:"+ r.getDstFileInfo());
-      throw new UnexpectedDataFoundException("unknown NodeType Error:"+r.getDstNodeType());
-    }
-}
+  }
 
   private String getDoneFileName(RouteInfo r) {
-    if (r.getDstFileInfo().getDstFileNameTrgExt().equals("")){
-        return "";
-      }
-    else 
-        return "&doneFileName=${file:name.noext}."+r.getDstFileInfo().getDstFileNameTrgExt();
+    if (r.getDstFileInfo().getDstFileNameTrgExt().equals("")) {
+      return "";
+    } else
+      return "&doneFileName=${file:name.noext}." + r.getDstFileInfo().getDstFileNameTrgExt();
   }
 }
-

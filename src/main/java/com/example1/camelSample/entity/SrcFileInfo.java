@@ -31,8 +31,9 @@ public class SrcFileInfo {
   public String getTrgFilePathAndNameWithExt() {
     return srcPath + "/" + srcfileName + "." + srcFileNameTrgExt;
   }
+
   public String getFilePath() {
-    return srcPath + "/" ;
+    return srcPath + "/";
   }
 
 }

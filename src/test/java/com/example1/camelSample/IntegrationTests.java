@@ -18,12 +18,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.commons.io.FileUtils;
-
 
 @CamelSpringBootTest
 @SpringBootTest
@@ -137,6 +133,22 @@ class IntegrationTests {
         assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
     }
 
+    @Test
+    @DisplayName("FTPGET-FTPPUT")
+    void F07FTPGETtoFTPPUT() throws Exception {
+        Exchange origin = consumer
+                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+        producer.send("ftp://foo1@localhost/./07?password=bar1&passiveMode=true&fileName=f07-utf-lf.dat&doneFileName=f07-utf-lf.trg", origin);
+        Thread.sleep(WAITTIME);
+
+        Exchange outputEx = consumer.receiveNoWait(
+                "ftp://foo2@localhost:121/./to/07?password=bar2&passiveMode=true&fileName=F07-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
+        File output = outputEx.getIn().getBody(File.class);
+        File expected = new File("./test/testfile-utf8.dat");
+        assertEquals(true, output.exists());
+        assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
+    }
+
     // 'RT08','nodeA','正規表現パターン','./08','utf8','LF','nodeA','./test/to/08','utf8','LF',0);
     // F08','正規表現パターン','f08-utf-lf.*','dat','trg','F01-UTF-LF-*-A','DAT','TRG','RT08','Trigger',1);
     @ParameterizedTest
@@ -166,9 +178,8 @@ class IntegrationTests {
     void F09正規表現パターン2(String strings) throws Exception {
         Exchange origin = consumer
                 .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
-        String sendurl = "file://./test/from/09?fileName=f09-utf-" + strings + ".dat"
-        +"&doneFileName=f09-utf-" + strings + ".trg"
-        ;
+        String sendurl = "file://./test/from/09?fileName=f09-utf-" + strings + ".dat" + "&doneFileName=f09-utf-"
+                + strings + ".trg";
         producer.send(sendurl, origin);
         Thread.sleep(WAITTIME);
         File output;
@@ -177,7 +188,7 @@ class IntegrationTests {
 
         outputEx = consumer.receiveNoWait("ftp://foo1@localhost/./09?password=bar1&passiveMode=true&fileName=F09-UTF-"
                 + strings.toUpperCase() + "-A.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
-        
+
         if (strings.startsWith("lf")) {
             output = outputEx.getIn().getBody(File.class);
             expected = new File("./test/testfile-utf8.dat");
@@ -188,6 +199,5 @@ class IntegrationTests {
         }
 
     }
-
 
 }
