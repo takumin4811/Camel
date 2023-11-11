@@ -18,11 +18,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.commons.io.FileUtils;
 
 @CamelSpringBootTest
-@SpringBootTest
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class IntegrationTests {
     @Autowired
     protected ProducerTemplate producer;
@@ -32,6 +34,8 @@ class IntegrationTests {
     private String testdir;
     Exchange origin;
     private final int WAITTIME = 3000;
+    @LocalServerPort
+    private int port;
 
     @BeforeAll
     static void setup() throws IOException {
