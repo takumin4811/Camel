@@ -13,6 +13,7 @@ services:
   mysql:
     image: mysql:latest
     environment:
+      TZ: Asia/Tokyo
       MYSQL_DATABASE: camel
       MYSQL_USER: apl
       MYSQL_PASSWORD: password
@@ -32,6 +33,7 @@ services:
       - "20:20"
       - "30000-30050:30000-30050"
     environment:
+      - TZ=Asia/Tokyo
       - PUBLICHOST=ftpSrv1
       - FTP_PASSIVE_PORTS=30000:30050
       - FTP_USER_NAME=foo1
@@ -44,22 +46,38 @@ services:
     ports:
       - "121:21"
       - "120:20"
-      - "40000-40009:40000-40009"
+      - "40000-40050:40000-40050"
     environment:
+      - TZ=Asia/Tokyo
       - PUBLICHOST=ftpSrv2
-      - FTP_PASSIVE_PORTS=40000:40009
+      - FTP_PASSIVE_PORTS=40000:40050
       - FTP_USER_NAME=foo2
       - FTP_USER_PASS=bar2
       - FTP_USER_HOME=/home/foo2
+      - FTP_MAX_CLIENTS=20
+      - FTP_MAX_CONNECTIONS=20
   sftpSrv1:
     image: atmoz/sftp
     ports:
         - "2222:22"
+    environment:
+      - TZ=Asia/Tokyo
+      - PUBLICHOST=sftpSrv1
     command: hoge1:fuga1:::data
   sftpSrv2:
     image: atmoz/sftp
-    ports:
-        - "2223:22"
+    # ports:
+    #     - "2223:22"
+    environment:
+      - TZ=Asia/Tokyo
+      - PUBLICHOST=sftpSrv2
     command: hoge2:fuga2:::data
-
-
+  squid:
+    image: robhaswell/squid-authenticated
+    # ports:
+    #   - "3128:3128"
+    environment:
+      - PUBLICHOST=squid
+      - TZ=Asia/Tokyo
+      - SQUID_USERNAME=foo
+      - SQUID_PASSWORD=bar
