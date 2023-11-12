@@ -130,7 +130,7 @@ class IntegrationTests {
         Thread.sleep(WAITTIME);
 
         Exchange outputEx = consumer.receiveNoWait(
-                "ftp://foo1@localhost/./06?password=bar1&passiveMode=true&fileName=F06-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
+                "ftp://foo1@ftpSrv1/./06?password=bar1&passiveMode=true&fileName=F06-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
         File output = outputEx.getIn().getBody(File.class);
         File expected = new File("./test/testfile-utf8.dat");
         assertEquals(true, output.exists());
@@ -142,11 +142,11 @@ class IntegrationTests {
     void F07FTPGETtoFTPPUT() throws Exception {
         Exchange origin = consumer
                 .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
-        producer.send("ftp://foo1@localhost/./07?password=bar1&passiveMode=true&fileName=f07-utf-lf.dat&doneFileName=f07-utf-lf.trg", origin);
+        producer.send("ftp://foo1@ftpSrv1/./07?password=bar1&passiveMode=true&fileName=f07-utf-lf.dat&doneFileName=f07-utf-lf.trg", origin);
         Thread.sleep(WAITTIME);
 
         Exchange outputEx = consumer.receiveNoWait(
-                "ftp://foo2@localhost:121/./to/07?password=bar2&passiveMode=true&fileName=F07-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
+                "ftp://foo2@ftpSrv2:21/./to/07?password=bar2&passiveMode=true&fileName=F07-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
         File output = outputEx.getIn().getBody(File.class);
         File expected = new File("./test/testfile-utf8.dat");
         assertEquals(true, output.exists());
@@ -190,7 +190,7 @@ class IntegrationTests {
         File expected;
         Exchange outputEx;
 
-        outputEx = consumer.receiveNoWait("ftp://foo1@localhost/./09?password=bar1&passiveMode=true&fileName=F09-UTF-"
+        outputEx = consumer.receiveNoWait("ftp://foo1@ftpSrv1/./09?password=bar1&passiveMode=true&fileName=F09-UTF-"
                 + strings.toUpperCase() + "-A.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
 
         if (strings.startsWith("lf")) {

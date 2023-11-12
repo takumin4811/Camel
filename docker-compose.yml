@@ -1,15 +1,18 @@
 version: '3.6'
 services:
-  # DEV:
-  #   image: takuminmin2/devjava
-  #   container_name: DEV
-  #   ports:
-  #     - 8080:8080
-  #     - 10001:10001
-  #   tty: true
-  #   volumes:
-  #     - ./:/Camel2/
-  #   working_dir: /Camel2/
+  DEV:
+    image: cameldev
+    container_name: DEV
+    ports:
+      - 8080:8080
+      - 10001:10001
+    tty: true
+    volumes:
+      - ./:/Camel2/:cached
+    working_dir: /Camel2/
+    environment:
+      TZ: Asia/Tokyo
+    restart: always
   mysql:
     image: mysql:latest
     environment:
@@ -19,8 +22,8 @@ services:
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: password
       MYSQL_TCP_PORT: 3306
-    ports:
-      - 3306:3306
+    # ports:
+    #   - 3306:3306
     # volumes:
     #   - ./logdb/my.cnf:/etc/mysql/conf.d/my.cnf
     #   - ./logdb/init:/docker-entrypoint-initdb.d
@@ -28,10 +31,10 @@ services:
     restart: always
   ftpSrv1:
     image: stilliard/pure-ftpd:latest
-    ports:
-      - "21:21"
-      - "20:20"
-      - "30000-30050:30000-30050"
+    # ports:
+    #   - "21:21"
+    #   - "20:20"
+    #   - "30000-30050:30000-30050"
     environment:
       - TZ=Asia/Tokyo
       - PUBLICHOST=ftpSrv1
@@ -43,10 +46,10 @@ services:
       - FTP_MAX_CONNECTIONS=20
   ftpSrv2:
     image: stilliard/pure-ftpd:latest
-    ports:
-      - "121:21"
-      - "120:20"
-      - "40000-40050:40000-40050"
+    # ports:
+    #   - "121:21"
+    #   - "120:20"
+    #   - "40000-40050:40000-40050"
     environment:
       - TZ=Asia/Tokyo
       - PUBLICHOST=ftpSrv2
@@ -58,8 +61,8 @@ services:
       - FTP_MAX_CONNECTIONS=20
   sftpSrv1:
     image: atmoz/sftp
-    ports:
-        - "2222:22"
+    # ports:
+    #     - "2222:22"
     environment:
       - TZ=Asia/Tokyo
       - PUBLICHOST=sftpSrv1

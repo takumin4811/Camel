@@ -13,8 +13,8 @@ insert into Routes values ('RT102','リモートからの取得リクエスト',
 insert into Routes values ('RT103','コピーリクエスト(正規表現）','nodeB','/test/from/103','utf8','LF','nodeA','./test/to/103','utf8','LF',0);
 
 insert into Nodes values ('nodeA','local','',null,'','',null);
-insert into Nodes values ('nodeB','ftp','localhost','21','foo1','bar1',true);
-insert into Nodes values ('nodeC','ftp','localhost','121','foo2','bar2',true);
+insert into Nodes values ('nodeB','ftp','ftpSrv1','21','foo1','bar1',true);
+insert into Nodes values ('nodeC','ftp','ftpSrv2','21','foo2','bar2',true);
 
 insert into PollingNodes values ('nodeA','./test/from',true,'trg');
 insert into PollingNodes values ('nodeB','/',true,'trg');

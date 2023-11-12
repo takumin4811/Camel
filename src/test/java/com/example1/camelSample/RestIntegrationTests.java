@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.Exchange;
@@ -22,7 +23,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class RestIntegrationTests {
         /** 接続テスト用のクライアント */
-        private WebTestClient client = WebTestClient.bindToServer().build();
+        private WebTestClient client = WebTestClient.bindToServer().responseTimeout(Duration.ofSeconds(30)).build();
         @LocalServerPort
         private int port;
         @Autowired
@@ -79,7 +80,7 @@ class RestIntegrationTests {
                 String baseurl = "http://localhost:" + port;
                 Exchange origin = consumer
                                 .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
-                producer.send("ftp://foo1@localhost:21/./102?password=bar1&passiveMode=true&fileName=f102-utf-lf.dat",
+                producer.send("ftp://foo1@ftpSrv1:21/./102?password=bar1&passiveMode=true&fileName=f102-utf-lf.dat",
                                 origin);
                 String url = baseurl + "/api/nodeB?srcPath=/102&srcFileNameWithExt=f102-utf-lf.dat";
                 String expectedStr = """
@@ -99,13 +100,13 @@ class RestIntegrationTests {
                 String baseurl = "http://localhost:" + port;
                 Exchange origin = consumer
                                 .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
-                producer.send("ftp://foo1@localhost:21/./test/from/103?password=bar1&passiveMode=true&fileName=f103-utf-lf1.dat&noop=true",
+                producer.send("ftp://foo1@ftpSrv1:21/./test/from/103?password=bar1&passiveMode=true&fileName=f103-utf-lf1.dat&noop=true",
                                 origin);
-                producer.send("ftp://foo1@localhost:21/./test/from/103?password=bar1&passiveMode=true&fileName=f103-utf-lf2.dat&noop=true",
+                producer.send("ftp://foo1@ftpSrv1:21/./test/from/103?password=bar1&passiveMode=true&fileName=f103-utf-lf2.dat&noop=true",
                                 origin);
-                producer.send("ftp://foo1@localhost:21/./test/from/103?password=bar1&passiveMode=true&fileName=f103-utf-lf3.dat&noop=true",
+                producer.send("ftp://foo1@ftpSrv1:21/./test/from/103?password=bar1&passiveMode=true&fileName=f103-utf-lf3.dat&noop=true",
                                 origin);
-                producer.send("ftp://foo1@localhost:21/./test/from/103?password=bar1&passiveMode=true&fileName=f103-utf-lg1.dat&noop=true",
+                producer.send("ftp://foo1@ftpSrv1:21/./test/from/103?password=bar1&passiveMode=true&fileName=f103-utf-lg1.dat&noop=true",
                                 origin);
                 String url = baseurl + "/api/nodeB?srcPath=/test/from/103&srcFileNameWithExt=f103-utf-lf(.*).dat";
                 String expectedStr = """
