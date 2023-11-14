@@ -46,5 +46,12 @@ public class Producer extends EndpointRouteBuilder {
           exchange.getIn().setHeader("targetStr", targetStr);// 荷物のヘッダに埋める
         }).toD("${in.headers.targetStr}")// 宛先URLへ配送
         .log("${in.headers.targetStr}").log("${file:name} is FTP Transfered").end();
+
+    from("direct:SftpProducer").id("SftpProducer") // 中央郵便局から振り分け先。ここは外部にSFTP-PUTするルート
+        .process(exchange -> {
+          String targetStr = getTargetURL.byRouteInfoInExchangeHeader(exchange);
+          exchange.getIn().setHeader("targetStr", targetStr);// 荷物のヘッダに埋める
+        }).toD("${in.headers.targetStr}")// 宛先URLへ配送
+        .log("${in.headers.targetStr}").log("${file:name} is SFTP Transfered").end();
   }
 }

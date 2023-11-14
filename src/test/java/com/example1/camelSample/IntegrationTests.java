@@ -201,7 +201,37 @@ class IntegrationTests {
         } else {
             assertNull(outputEx);
         }
+    }
+    @Test
+    @DisplayName("SFTP送信（UTF8LF無変換）")
+    void F16SFTPPUT() throws Exception {
+        Exchange origin = consumer
+                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+        producer.send("file://./test/from/16?fileName=f16-utf-lf.dat&doneFileName=f16-utf-lf.trg", origin);
+        Thread.sleep(WAITTIME);
 
+        Exchange outputEx = consumer.receiveNoWait(
+                "sftp://hoge1@sftpSrv1/data?password=fuga1&fileName=F16-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
+        File output = outputEx.getIn().getBody(File.class);
+        File expected = new File("./test/testfile-utf8.dat");
+        assertEquals(true, output.exists());
+        assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
+    }
+
+    @Test
+    @DisplayName("SFTPGET-SFTPPUT")
+    void F17SFTPGETtoSFTPPUT() throws Exception {
+        Exchange origin = consumer
+                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+        producer.send("sftp://hoge1@sftpSrv1/data?password=fuga1&fileName=f17-utf-lf.dat&doneFileName=f17-utf-lf.trg", origin);
+        Thread.sleep(WAITTIME);
+
+        Exchange outputEx = consumer.receiveNoWait(
+                "sftp://hoge2@sftpSrv2/data?password=fuga2&fileName=F17-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
+        File output = outputEx.getIn().getBody(File.class);
+        File expected = new File("./test/testfile-utf8.dat");
+        assertEquals(true, output.exists());
+        assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
     }
 
 }

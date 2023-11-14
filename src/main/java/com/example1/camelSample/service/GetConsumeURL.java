@@ -6,13 +6,17 @@ import org.springframework.stereotype.Service;
 import com.example1.camelSample.entity.FtpServer;
 import com.example1.camelSample.entity.NodeType;
 import com.example1.camelSample.entity.RouteInfo;
+import com.example1.camelSample.entity.SftpServer;
 import com.example1.camelSample.exception.UnexpectedDataFoundException;
 import com.example1.camelSample.repository.FtpServerDao;
+import com.example1.camelSample.repository.SftpServerDao;
 
 @Service
 public class GetConsumeURL {
   @Autowired
   FtpServerDao ftpServerDao;
+  @Autowired
+  SftpServerDao sftpServerDao;
 
   public String byRouteInfo(RouteInfo r) throws UnexpectedDataFoundException {
     NodeType nodeType = r.getSrcNodeType();
@@ -45,8 +49,24 @@ public class GetConsumeURL {
         endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost() + ":" + f.getPort() + "/" + filePath + "?"
             + "password=" + f.getPasswd() + "&passiveMode=" + f.getIsPassive() + "&antInclude=" + antfileName
             + "&noop=true&localworkdirectory=/tmp/";
-          }
-          return endpointURL;
+      }
+      return endpointURL;
+    }
+    if (nodeType.equals(NodeType.SFTP)) {
+      SftpServer f = sftpServerDao.getSFTPServerInfo(r.getSrcFileInfo().getSrcNodeId());
+      String fileName = r.getSrcFileInfo().getFileNameWithExt();
+      String filePath = r.getSrcFileInfo().getFilePath();
+      if (r.getSrcFileInfo().getRegexKbn() == 0) {
+        endpointURL = "sftp://" + f.getUserid() + "@" + f.getHost() + ":" + f.getPort() + "/" + filePath + "?"
+            + "password=" + f.getPasswd() + "&filename=" + fileName
+            + "&noop=true&localworkdirectory=/tmp/";
+      } else {
+        String antfileName = fileName.replace("(.*)", "*");
+        endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost() + ":" + f.getPort() + "/" + filePath + "?"
+            + "password=" + f.getPasswd() + "&antInclude=" + antfileName
+            + "&noop=true&localworkdirectory=/tmp/";
+      }
+      return endpointURL;
     } else {
       throw new UnexpectedDataFoundException("unknown NodeType Error:" + nodeType);
     }

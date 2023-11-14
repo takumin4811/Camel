@@ -17,7 +17,7 @@ public class FtpServerDao {
   private JdbcTemplate jdbcTemplate;
 
   public FtpServer getFTPServerInfo(String nodeId) {
-    String sql = "SELECT * from Nodes where nodetype='FTP' and nodeId= ? ";
+    String sql = "SELECT * from Nodes where nodetype='ftp' and nodeId= ? ";
     RowMapper<FtpServer> rowMapper = new BeanPropertyRowMapper<>(FtpServer.class);
     try {
       FtpServer ftpServer = jdbcTemplate.queryForObject(sql, rowMapper, nodeId);

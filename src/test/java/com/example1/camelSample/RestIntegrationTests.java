@@ -94,6 +94,25 @@ class RestIntegrationTests {
                 assertEquals(FileUtils.readFileToString(output, "UTF-8"),
                                 (FileUtils.readFileToString(expected, "UTF-8")));
         }
+        @Test
+        void F112リモートからの取得リクエスト() throws Exception {
+                String baseurl = "http://localhost:" + port;
+                Exchange origin = consumer
+                                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+                producer.send("sftp://hoge1@sftpSrv1:22/data?password=fuga1&fileName=f112-utf-lf.dat",
+                                origin);
+                String url = baseurl + "/api/nodeD?srcPath=data&srcFileNameWithExt=f112-utf-lf.dat";
+                String expectedStr = """
+                        {"status":"OK","message":"Request is Completed. 1 File Transfered","tranferedFileList":[{"consumedFileName":"f112-utf-lf.dat","producedFileName":"./test/to/112/F112-UTF-LF.DAT","result":"OK"}]}""";
+
+                this.client.get().uri(url).exchange().expectBody(String.class).isEqualTo(expectedStr);
+
+                File output = new File("./test/to/112/F112-UTF-LF.DAT");
+                File expected = new File("./test/testfile-utf8.dat");
+                assertEquals(true, output.exists());
+                assertEquals(FileUtils.readFileToString(output, "UTF-8"),
+                                (FileUtils.readFileToString(expected, "UTF-8")));
+        }
 
         @Test
         void F103リモートからの取得リクエスト正規表現による複数取得() throws Exception {

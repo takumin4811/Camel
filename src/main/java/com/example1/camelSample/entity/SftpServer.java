@@ -5,12 +5,11 @@ import java.net.Proxy;
 import lombok.Data;
 
 @Data
-public class FtpServer {
+public class SftpServer {
     String nodeId;
     String host;
     Integer port;
     String userid;
     String passwd;
-    Boolean isPassive;
     Proxy proxy;
 }

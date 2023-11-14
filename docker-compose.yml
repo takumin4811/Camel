@@ -82,5 +82,5 @@ services:
     environment:
       - PUBLICHOST=squid
       - TZ=Asia/Tokyo
-      - SQUID_USERNAME=foo
-      - SQUID_PASSWORD=bar
+      - SQUID_USERNAME=tako
+      - SQUID_PASSWORD=ika

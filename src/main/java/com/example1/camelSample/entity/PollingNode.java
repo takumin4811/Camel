@@ -23,7 +23,10 @@ public class PollingNode {
     }
     if (this.nodetype.equals("ftp")) {
       return getFtpPolingString();
-    } else {
+    } 
+    if (this.nodetype.equals("sftp")) {
+      return getSftpPolingString();
+    }else {
       throw new UnexpectedDataFoundException("unknown NodeType Error:" + this.nodetype);
     }
   }
@@ -37,8 +40,13 @@ public class PollingNode {
   private String getFtpPolingString() {
     return "ftp://" + userid + "@" + host + ":" + port + "/" + pollingDirectory + "?password=" + passwd
         + "&passiveMode=" + isPassive + "&doneFileName=" + "${file:name.noext}." + pollingTrgName + "&recursive="
-        + pollingRecursive + "&move=.done/${file:name}_${date:now:yyyyMMddHHmmss}"
-        + "&moveFailed=.error/${file:name}_${date:now:yyyyMMddHHmmss}" + "&localworkdirectory=/tmp/";
+        + pollingRecursive + "&localworkdirectory=/tmp/";
+  }
+
+  private String getSftpPolingString() {
+    return "sftp://" + userid + "@" + host + ":" + port + "/" + pollingDirectory + "?password=" + passwd
+        + "&doneFileName=" + "${file:name.noext}." + pollingTrgName + "&recursive="
+        + pollingRecursive + "&localworkdirectory=/tmp/"+"&useUserKnownHostsFile=false";
   }
 
 }

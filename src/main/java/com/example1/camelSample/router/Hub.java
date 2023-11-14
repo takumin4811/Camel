@@ -36,7 +36,10 @@ public class Hub extends EndpointRouteBuilder {
                 .when(simple("${in.headers.routeInfo.dstNodeType}").isEqualTo("local")) // ルートタイプがローカルならローカルファイルプロデュース（MOVE)のコースへ
                 .log("Local Route").to("direct:LocalFileProducer")
                 .when(simple("${in.headers.routeInfo.dstNodeType}").isEqualTo("ftp"))// ルートタイプがFTPならFTPプロデュース（FTP-PUT)のコースへ
-                .log("FTP Route").to("direct:FtpProducer").otherwise()// いずれにも合致しない場合は例外をスローの奈落コースへ
+                .log("FTP Route").to("direct:FtpProducer")
+                .when(simple("${in.headers.routeInfo.dstNodeType}").isEqualTo("sftp"))// ルートタイプがSFTPならSFTPプロデュース（FTP-PUT)のコースへ
+                .log("SFTP Route").to("direct:SftpProducer")                
+                .otherwise()// いずれにも合致しない場合は例外をスローの奈落コースへ
                 .log("Others").to("mock:error").end();
     }
 }
