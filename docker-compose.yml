@@ -75,8 +75,14 @@ services:
       - TZ=Asia/Tokyo
       - PUBLICHOST=sftpSrv2
     command: hoge2:fuga2:::data
+  sftpSrv3:
+    image: atmoz/sftp
+    environment:
+      - TZ=Asia/Tokyo
+      - PUBLICHOST=sftpSrv3
+    command: hoge3:fuga3:::data
   squid:
-    image: robhaswell/squid-authenticated
+    image: mysquid
     # ports:
     #   - "3128:3128"
     environment:

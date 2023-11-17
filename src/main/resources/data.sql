@@ -15,11 +15,15 @@ insert into Routes values ('RT103','コピーリクエスト(正規表現）','n
 insert into Routes values ('RT16','SFTPPUT','nodeA','./test/from/16','utf8','LF','nodeD','data','utf8','LF',0);
 insert into Routes values ('RT17','SFTPGET-SFTPPUT','nodeD','/data','utf8','LF','nodeE','data','utf8','LF',0);
 
-insert into Nodes values ('nodeA','local','',null,'','',null,null,null,null,null);
-insert into Nodes values ('nodeB','ftp','ftpSrv1','21','foo1','bar1',true,null,null,null,null);
-insert into Nodes values ('nodeC','ftp','ftpSrv2','21','foo2','bar2',true,null,null,null,null);
-insert into Nodes values ('nodeD','sftp','sftpSrv1','22','hoge1','fuga1',null,null,null,null,null);
-insert into Nodes values ('nodeE','sftp','sftpSrv2','22','hoge2','fuga2',null,'squid',3128,'tako','ika');
+insert into Nodes values ('nodeA','local','',null,'','',null,null);
+insert into Nodes values ('nodeB','ftp','ftpSrv1','21','foo1','bar1',true,null);
+insert into Nodes values ('nodeC','ftp','ftpSrv2','21','foo2','bar2',true,null);
+insert into Nodes values ('nodeD','sftp','sftpSrv1','22','hoge1','fuga1',null,null);
+insert into Nodes values ('nodeE','sftp','sftpSrv2','22','hoge2','fuga2',null,null);
+insert into Nodes values ('nodeF','sftp','sftpSrv3','22','hoge3','fuga3',null,proxy1);
+
+insert into Proxies values ('proxy1','squid',3128,'tako','ika');
+
 
 insert into PollingNodes values ('nodeA','./test/from',true,'trg');
 insert into PollingNodes values ('nodeB','/',true,'trg');

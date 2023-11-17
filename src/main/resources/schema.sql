@@ -35,11 +35,18 @@ create table if not exists Nodes(
     userid varchar(10),
     passwd varchar(10),
     isPassive boolean,
+    proxyId varchar(8) 
+);
+
+Drop table if exists Proxies;
+create table if not exists Proxies(
+    proxyId varchar(8) primary key,
     proxyhost varchar(15),
     proxyport int(5),
     proxyuserid varchar(10),
     proxypasswd varchar(10)
 );
+
 
 Drop table if exists PollingNodes;
 create table if not exists PollingNodes(

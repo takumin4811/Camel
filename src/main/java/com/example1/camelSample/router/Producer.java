@@ -1,11 +1,16 @@
 package com.example1.camelSample.router;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import com.example1.camelSample.exception.UnexpectedDataFoundException;
 import com.example1.camelSample.service.GetTargetURL;
+import com.jcraft.jsch.ProxyHTTP;
+
+import java.util.Map;
+
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 
@@ -13,6 +18,9 @@ import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 public class Producer extends EndpointRouteBuilder {
   @Autowired
   GetTargetURL getTargetURL;
+  @Autowired
+  @Qualifier("Proxies")
+  Map<String, ProxyHTTP> proxies;
 
   @Override
   public void configure() throws Exception {
@@ -53,5 +61,9 @@ public class Producer extends EndpointRouteBuilder {
           exchange.getIn().setHeader("targetStr", targetStr);// 荷物のヘッダに埋める
         }).toD("${in.headers.targetStr}")// 宛先URLへ配送
         .log("${in.headers.targetStr}").log("${file:name} is SFTP Transfered").end();
+
+    proxies.forEach((key, value) -> {
+      getContext().getRegistry().bind(key, value);
+    });
   }
 }

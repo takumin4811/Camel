@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import com.example1.camelSample.entity.SftpServer;
 
 import lombok.extern.slf4j.Slf4j;
-import java.net.Proxy;
 
 @Repository
 @Slf4j
@@ -20,13 +19,14 @@ public class SftpServerDao {
 
   public SftpServer getSFTPServerInfo(String nodeId) {
     String sql = "SELECT * from Nodes where nodetype='sftp' and nodeId= ? ";
-    String sql2 = "SELECT proxyhost,proxyport,proxyuserid,proxypasswd from Nodes where nodetype='sftp' and nodeId= ? ";
+    // String sql2 = "SELECT proxyhost,proxyport,proxyuserid,proxypasswd from Nodes
+    // where nodetype='sftp' and nodeId= ? ";
     RowMapper<SftpServer> rowMapper = new BeanPropertyRowMapper<>(SftpServer.class);
-    RowMapper<Proxy> rowMapper2 = new BeanPropertyRowMapper<>(Proxy.class);
+    // RowMapper<Proxy> rowMapper2 = new BeanPropertyRowMapper<>(Proxy.class);
     try {
       SftpServer sftpServer = jdbcTemplate.queryForObject(sql, rowMapper, nodeId);
-      Proxy p = jdbcTemplate.queryForObject(sql2, rowMapper2, nodeId);
-      sftpServer.setProxy(p);
+      // Proxy p = jdbcTemplate.queryForObject(sql2, rowMapper2, nodeId);
+      // sftpServer.setProxy(p);
       return sftpServer;
     } catch (EmptyResultDataAccessException e) {
       log.warn(sql + "  Args :  " + nodeId);

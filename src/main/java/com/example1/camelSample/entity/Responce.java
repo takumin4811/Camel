@@ -17,7 +17,7 @@ public class Responce {
   public Responce(String status, String message) {
     this.status = status;
     this.message = message;
-    this.tranferedFileList = new ArrayList<>(); 
+    this.tranferedFileList = new ArrayList<>();
     switch (status) {
     case "Error":
       log.info(message);
@@ -30,15 +30,15 @@ public class Responce {
     }
   }
 
-  public void addtranferedFilesList(String consumedFileName, String  producedFileName,String result) {
-    tranferedFileList.add(new TranferedFile(consumedFileName,producedFileName,result));
+  public void addtranferedFilesList(String consumedFileName, String producedFileName, String result) {
+    tranferedFileList.add(new TranferedFile(consumedFileName, producedFileName, result));
   }
- 
+
   @Data
   @AllArgsConstructor
   private class TranferedFile {
-    String  consumedFileName;
-    String  producedFileName;
+    String consumedFileName;
+    String producedFileName;
     String result;
   }
 }
