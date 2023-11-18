@@ -234,4 +234,36 @@ class IntegrationTests {
         assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
     }
 
+    @Test
+    @DisplayName("SFTP送信（UTF8LF無変換、プロキシ経由）")
+    void F18SFTPPUTwithPROXY() throws Exception {
+        Exchange origin = consumer
+                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+        producer.send("file://./test/from/18?fileName=f18-utf-lf.dat&doneFileName=f18-utf-lf.trg", origin);
+        Thread.sleep(WAITTIME);
+
+        Exchange outputEx = consumer.receiveNoWait(
+                "sftp://hoge3@sftpSrv3/data?password=fuga3&fileName=F18-UTF-LF.DAT&noop=true&idempotent=false&localworkdirectory=/tmp/");
+        File output = outputEx.getIn().getBody(File.class);
+        File expected = new File("./test/testfile-utf8.dat");
+        assertEquals(true, output.exists());
+        assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
+    }
+
+    @Test
+    @DisplayName("SFTPGET（UTF8LF無変換、プロキシ経由）")
+    void F19SFTPGETwithPROXY() throws Exception {
+        Exchange origin = consumer
+                .receiveNoWait("file://./test/?fileName=testfile-utf8.dat&noop=true&idempotent=false");
+        producer.send("sftp://hoge3@sftpSrv3/data?password=fuga3&fileName=f19-utf-lf.dat&doneFileName=f19-utf-lf.trg", origin);
+        Thread.sleep(WAITTIME);
+
+        File output = new File("./test/to/19/F19-UTF-LF.DAT");
+        File expected = new File("./test/testfile-utf8.dat");
+
+        assertEquals(true, output.exists());
+        assertEquals(FileUtils.readFileToString(output, "utf8"), (FileUtils.readFileToString(expected, "utf8")));
+    }
+
+
 }

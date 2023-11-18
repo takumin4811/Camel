@@ -14,13 +14,16 @@ insert into Routes values ('RT112','リモートからのSFTP取得リクエス�
 insert into Routes values ('RT103','コピーリクエスト(正規表現）','nodeB','/test/from/103','utf8','LF','nodeA','./test/to/103','utf8','LF',0);
 insert into Routes values ('RT16','SFTPPUT','nodeA','./test/from/16','utf8','LF','nodeD','data','utf8','LF',0);
 insert into Routes values ('RT17','SFTPGET-SFTPPUT','nodeD','/data','utf8','LF','nodeE','data','utf8','LF',0);
+insert into Routes values ('RT18','SFTPPUTwithPROXY','nodeA','./test/from/18','utf8','LF','nodeF','data','utf8','LF',0);
+insert into Routes values ('RT19','SFTPGETwithPROXY','nodeF','data','utf8','LF','nodeA','./test/to/19','utf8','LF',0);
+insert into Routes values ('RT113','SFTPGETwithPROXYByRequest','nodeF','data','utf8','LF','nodeA','./test/to/113','utf8','LF',0);
 
 insert into Nodes values ('nodeA','local','',null,'','',null,null);
 insert into Nodes values ('nodeB','ftp','ftpSrv1','21','foo1','bar1',true,null);
 insert into Nodes values ('nodeC','ftp','ftpSrv2','21','foo2','bar2',true,null);
 insert into Nodes values ('nodeD','sftp','sftpSrv1','22','hoge1','fuga1',null,null);
 insert into Nodes values ('nodeE','sftp','sftpSrv2','22','hoge2','fuga2',null,null);
-insert into Nodes values ('nodeF','sftp','sftpSrv3','22','hoge3','fuga3',null,proxy1);
+insert into Nodes values ('nodeF','sftp','sftpSrv3','22','hoge3','fuga3',null,'proxy1');
 
 insert into Proxies values ('proxy1','squid',3128,'tako','ika');
 
@@ -30,6 +33,7 @@ insert into PollingNodes values ('nodeB','/',true,'trg');
 insert into PollingNodes values ('nodeC','/',true,'trg');
 insert into PollingNodes values ('nodeD','/',true,'trg');
 insert into PollingNodes values ('nodeE','/',true,'trg');
+insert into PollingNodes values ('nodeF','data',true,'trg');
 
 insert into FileInfos values ('F01','単純コピー','f01-utf-lf','dat','trg','F01-UTF-LF','DAT','','RT01','Trigger',0);
 insert into FileInfos values ('F02','LFからCRLFに変換','f02-utf-lf','dat','trg','F02-UTF-CRLF','DAT','','RT02','Trigger',0);
@@ -42,9 +46,11 @@ insert into FileInfos values ('F08','正規表現パターン','f08-utf-lf(.*)',
 insert into FileInfos values ('F09','正規表現パターン2','f09-utf-lf(.*)','dat','trg','F09-UTF-LF$1-A','DAT','TRG','RT09','Trigger',1);
 insert into FileInfos values ('F16','SFTPPUT','f16-utf-lf','dat','trg','F16-UTF-LF','DAT','TRG','RT16','Trigger',0);
 insert into FileInfos values ('F17','SFTPGET-SFTPPUT','f17-utf-lf','dat','trg','F17-UTF-LF','DAT','TRG','RT17','Trigger',0);
+insert into FileInfos values ('F18','SFTPPUTwithPROXY','f18-utf-lf','dat','trg','F18-UTF-LF','DAT','TRG','RT18','Trigger',0);
+insert into FileInfos values ('F19','SFTPGETwithPROXY','f19-utf-lf','dat','trg','F19-UTF-LF','DAT','TRG','RT19','Trigger',0);
 
 insert into FileInfos values ('F101','単純コピーリクエスト','f101-utf-lf','dat','trg','F101-UTF-LF','DAT','TRG','RT101','',0);
 insert into FileInfos values ('F102','リモートからのFTP取得リクエスト','f102-utf-lf','dat','trg','F102-UTF-LF','DAT','TRG','RT102','',0);
 insert into FileInfos values ('F103','コピーリクエスト(正規表現）','f103-utf-lf(.*)','dat','trg','F103-UTF-LF$1','DAT','TRG','RT103','',1);
-insert into FileInfos values ('F112','リモートからのSFTP取得リクエスト','f112-utf-lf','dat','trg','F112-UTF-LF','DAT','TRG','RT112','',0);
+insert into FileInfos values ('F113','SFTPGETwithPROXYByRequest','f113-utf-lf','dat','trg','F113-UTF-LF','DAT','TRG','RT113','',0);
 

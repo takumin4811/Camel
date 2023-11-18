@@ -83,6 +83,7 @@ public class HelloRestController {
       if (exchange.getException() != null) {
           return new Responce("Error", exchange.getException().getMessage());
       }
+      log.info(exchange.getIn().getHeaders().toString());
       String camelFileNameConsumed = (String) exchange.getIn().getHeader("CamelFileNameConsumed");
       String camelFileNameProduced = (String) exchange.getIn().getHeader("CamelFileNameProduced");
       okResponce.addtranferedFilesList(camelFileNameConsumed, camelFileNameProduced, "OK");

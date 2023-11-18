@@ -62,7 +62,7 @@ public class GetConsumeURL {
             + "&noop=true&localworkdirectory=/tmp/";
       } else {
         String antfileName = fileName.replace("(.*)", "*");
-        endpointURL = "ftp://" + f.getUserid() + "@" + f.getHost() + ":" + f.getPort() + "/" + filePath + "?"
+        endpointURL = "sftp://" + f.getUserid() + "@" + f.getHost() + ":" + f.getPort() + "/" + filePath + "?"
             + "password=" + f.getPasswd() + "&antInclude=" + antfileName
             + "&noop=true&localworkdirectory=/tmp/";
       }
