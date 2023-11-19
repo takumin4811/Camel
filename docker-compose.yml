@@ -9,6 +9,7 @@ services:
     tty: true
     volumes:
       - ./:/Camel2/:cached
+      - ./.ssh/:/root/.ssh/:cached
     working_dir: /Camel2/
     environment:
       TZ: Asia/Tokyo
